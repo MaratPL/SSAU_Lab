@@ -1,4 +1,4 @@
-package ssau.lab1;
+package ssau.lab;
 
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;

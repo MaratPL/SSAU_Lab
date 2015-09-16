@@ -1,8 +1,8 @@
 package ssau.test;
 
-import ssau.lab1.Game;
-import ssau.lab1.Genre;
-import ssau.lab1.Model;
+import ssau.lab.Game;
+import ssau.lab.Genre;
+import ssau.lab.Model;
 
 import java.util.ArrayList;
 import java.util.List;

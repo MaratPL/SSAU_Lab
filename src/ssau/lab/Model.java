@@ -1,11 +1,9 @@
-package ssau.lab1;
+package ssau.lab;
 
 import com.sun.istack.internal.NotNull;
+import com.sun.istack.internal.Nullable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Model {
 
@@ -34,6 +32,7 @@ public class Model {
         return game;
     }
 
+    @NotNull
     public Genre createGenre(@NotNull final String genreName) {
         Genre genre = new Genre(genreName);
         genreMap.put(genre.getGenreId(), genre);
@@ -58,11 +57,13 @@ public class Model {
     }
 
     // возввращает List всех жанров игры
+    @NotNull
     public List<Genre> getGameGenreList(@NotNull final String gameId) {
         return gameMap.get(gameId).getGenreList();
     }
 
     // возввращает List всех игр этого жанра
+    @NotNull
     public List<Game> getGenreGameList(@NotNull final String genreId) {
         final List<Game> resultList = new ArrayList<Game>();
 
@@ -73,6 +74,49 @@ public class Model {
         return resultList;
     }
 
+    @NotNull
+    public Collection<Game> getAllGames() {
+        return gameMap.values();
+    }
+
+    @NotNull
+    public Collection<Genre> getAllGenre() {
+        return genreMap.values();
+    }
+
+    @Nullable
+    public Game updateGame(
+            @NotNull final String gameId,
+            @NotNull final String gameName,
+            @NotNull final String gameCompany,
+            @NotNull final List<Genre> genreList
+    ) {
+        final Game game = gameMap.get(gameId);
+
+        if(game != null) {
+            game.setGameName(gameName);
+            game.setGameCompany(gameCompany);
+            game.setGenreList(genreList);
+            return game;
+        }
+
+        return null;
+    }
+
+    @Nullable
+    public Genre updateGenre(
+            @NotNull final String genreId,
+            @NotNull final String genreName
+    ) {
+        final Genre genre = genreMap.get(genreId);
+
+        if(genre != null) {
+            genre.setGenreName(genreName);
+            return genre;
+        }
+
+        return null;
+    }
     
     public void removeGenreForGame(@NotNull final String gameId, @NotNull final  String genreId) {
         List<String> genreForGameList = gameGenreMap.get(gameId);
@@ -81,6 +125,40 @@ public class Model {
             genreForGameList.remove(genreId);
             gameGenreMap.get(genreId).remove(gameId);
         }
+    }
+
+    @Nullable
+    public Game removeGameById(@NotNull final String gameId) {
+        final Game game = gameMap.remove(gameId);
+
+        if(game == null) {
+            return null;
+        }
+
+        for(final String genreId : gameGenreMap.get(gameId)) {
+            gameGenreMap.get(genreId).remove(gameId);
+        }
+
+        gameGenreMap.remove(gameId);
+
+        return game;
+    }
+
+    @Nullable
+    public Genre removeGenreById(@NotNull final String genreId) {
+        final Genre genre = genreMap.remove(genreId);
+
+        if(genre == null) {
+            return null;
+        }
+
+        for(final String gameId : gameGenreMap.get(genreId)) {
+            gameGenreMap.get(gameId).remove(genreId);
+        }
+
+        gameGenreMap.remove(genreId);
+
+        return genre;
     }
 
     @NotNull
