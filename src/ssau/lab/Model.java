@@ -3,9 +3,10 @@ package ssau.lab;
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class Model {
+public class Model implements Serializable{
 
     
     private Map<String,  List<String>> gameGenreMap;         // связь сущностей ИГРА и ЖАНР.

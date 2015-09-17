@@ -3,9 +3,10 @@ package ssau.lab;
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
 
+import java.io.Serializable;
 import java.util.UUID;
 
-public class Genre {
+public class Genre implements Serializable{
 
     @NotNull
     private final String genreId = UUID.randomUUID().toString();

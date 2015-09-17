@@ -3,11 +3,12 @@ package ssau.lab;
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class Game {
+public class Game implements Serializable{
 
     @NotNull
     private final String gameId = UUID.randomUUID().toString();
