@@ -7,6 +7,7 @@ import ssau.lab.Model;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import ssau.view.*;
 
 public class Test {
 
@@ -17,6 +18,32 @@ public class Test {
         List<String> games = new ArrayList<String>();
         List<String> genres = new ArrayList<String>();
 
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(NewJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(NewJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(NewJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(NewJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new NewJFrame().setVisible(true);
+            }
+        });
+
+   /*
         for (int i = 0; i < 10; i++) {
             Random rand = new Random();
             Game game = model1.createGame(Integer.toString(rand.nextInt(100)), "2015");
@@ -62,6 +89,7 @@ public class Test {
             System.out.println("");
         }
 
+    */
     }
 
 }

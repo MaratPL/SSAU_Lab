@@ -9,14 +9,14 @@ import java.util.*;
 public class Model implements Serializable{
 
     
-    private Map<String,  List<String>> gameGenreMap;         // связь сущностей ИГРА и ЖАНР.
-                                    // представляет из себя HashMap<String, List<String>>
-                                    // id Игры и Жанра является уникальным ключём
-                                    // для доступа к списку жанров конкретной игры и 
-                                    //               списку игр этого жанра соответственно
+    private Map<String,  List<String>> gameGenreMap;        // связь сущностей ИГРА и ЖАНР.
+                                                            // представляет из себя HashMap<String, List<String>>
+                                                            // id Игры и Жанра является уникальным ключём
+                                                            // для доступа к списку жанров конкретной игры и
+                                                            // списку игр этого жанра соответственно
     
-    private Map<String, Game> gameMap;
-    private Map<String, Genre> genreMap;
+    private Map<String, Game> gameMap;      // все игры в модели
+    private Map<String, Genre> genreMap;    // все жанры в модели
 
 
     public Model() {
