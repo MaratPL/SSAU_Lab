@@ -26,8 +26,8 @@ public class Model implements Serializable{
     }
 
     @NotNull
-    public Game createGame(@NotNull final String gameName, @NotNull final String gameData, @NotNull final List<Genre> genrelist) {
-        Game game = new Game(gameName, gameData, genrelist);
+    public Game createGame(@NotNull final String gameName, @NotNull final String gameCompany, @NotNull final List<Genre> genrelist) {
+        Game game = new Game(gameName, gameCompany, genrelist);
         gameMap.put(game.getGameId(), game);
         gameGenreMap.put(game.getGameId(), getGenreIds(game.getGenreList()));
         return game;
@@ -51,6 +51,24 @@ public class Model implements Serializable{
                 gameGenreMap.get(genre.getGenreId()).add(gameId);
             }
         }
+    }
+
+    @Nullable
+    public Game getGameById(@NotNull final String gameId) {
+        if(gameMap.containsKey(gameId)) {
+            return gameMap.get(gameId);
+        }
+
+        return null;
+    }
+
+    @Nullable
+    public Genre getGenreById(@NotNull final String genreId) {
+        if(genreMap.containsKey(genreId)) {
+            return genreMap.get(genreId);
+        }
+
+        return null;
     }
 
     public void setGenreInMap(@NotNull final String genreId) {

@@ -1,22 +1,38 @@
 package ssau.test;
 
-import ssau.lab.Game;
-import ssau.lab.Genre;
+import com.sun.istack.internal.NotNull;
+import ssau.controller.ModelController;
 import ssau.lab.Model;
+import ssau.view.NewJFrame;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
-import ssau.view.*;
 
 public class Test {
 
     public static void main(String[] args) {
 
+        @NotNull
         Model model1 = new Model();
 
+        @NotNull
         List<String> games = new ArrayList<String>();
+
+        @NotNull
         List<String> genres = new ArrayList<String>();
+
+        @NotNull
+        final ModelController modelController = new ModelController();
+
+        try {
+            modelController.writeModelInFile("out.txt");
+            model1 = modelController.readModelFromFile("out.txt");
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
 
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
