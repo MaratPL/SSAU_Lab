@@ -4,9 +4,8 @@ package ssau.lab;
  * Created by stpal on 17.09.2015.
  */
 
-import java.util.List;
-
 import javax.xml.bind.annotation.XmlElement;
+import java.util.List;
 
 class MapElements {
     @XmlElement

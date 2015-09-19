@@ -4,11 +4,10 @@ package ssau.lab;
  * Created by stpal on 17.09.2015.
  */
 
+import javax.xml.bind.annotation.adapters.XmlAdapter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 
     class MapAdapter extends XmlAdapter<MapElements[], Map<String, List<String>>> {

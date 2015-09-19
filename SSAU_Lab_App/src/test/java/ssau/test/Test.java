@@ -1,6 +1,6 @@
 package ssau.test;
 
-import com.sun.istack.internal.NotNull;
+import org.jetbrains.annotations.NotNull;
 import ssau.controller.ModelController;
 import ssau.lab.Model;
 import ssau.view.NewJFrame;
