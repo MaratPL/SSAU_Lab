@@ -9,7 +9,7 @@ import java.util.*;
 public class Model implements Serializable{
 
     
-    private Map<String,  List<String>> gameGenreMap;        // связь сущностей ИГРА и ЖАНР.
+    // связь сущностей ИГРА и ЖАНР.
                                                             // представляет из себя HashMap<String, List<String>>
                                                             // id Игры и Жанра является уникальным ключём
                                                             // для доступа к списку жанров конкретной игры и
@@ -20,7 +20,6 @@ public class Model implements Serializable{
 
 
     public Model() {
-        gameGenreMap = new HashMap<String, List<String>>();
         gameMap = new HashMap<String, Game>();
         genreMap = new HashMap<String, Genre>();
     }
@@ -29,7 +28,6 @@ public class Model implements Serializable{
     public Game createGame(@NotNull final String gameName, @NotNull final String gameCompany, @NotNull final List<Genre> genrelist) {
         Game game = new Game(gameName, gameCompany, genrelist);
         gameMap.put(game.getGameId(), game);
-        gameGenreMap.put(game.getGameId(), getGenreIds(game.getGenreList()));
         return game;
     }
 
@@ -37,21 +35,9 @@ public class Model implements Serializable{
     public Genre createGenre(@NotNull final String genreName) {
         Genre genre = new Genre(genreName);
         genreMap.put(genre.getGenreId(), genre);
-        gameGenreMap.put(genre.getGenreId(), new ArrayList<String>());
         return genre;
     }
 
-    public void setGameInMap(@NotNull final String gameId) {
-        if(!gameGenreMap.containsKey(gameId)) {
-            gameGenreMap.put(gameId, getGenreIds(gameMap.get(gameId).getGenreList()));
-        }
-
-        for(final Genre genre : gameMap.get(gameId).getGenreList()) {
-            if(!gameGenreMap.get(genre.getGenreId()).contains(gameId)) {
-                gameGenreMap.get(genre.getGenreId()).add(gameId);
-            }
-        }
-    }
 
     @Nullable
     public Game getGameById(@NotNull final String gameId) {
@@ -71,10 +57,6 @@ public class Model implements Serializable{
         return null;
     }
 
-    public void setGenreInMap(@NotNull final String genreId) {
-        gameGenreMap.put(genreId, new ArrayList<String>());
-    }
-
     // возввращает List всех жанров игры
     @NotNull
     public List<Genre> getGameGenreList(@NotNull final String gameId) {
@@ -84,10 +66,15 @@ public class Model implements Serializable{
     // возввращает List всех игр этого жанра
     @NotNull
     public List<Game> getGenreGameList(@NotNull final String genreId) {
+
+        final Genre  genre = genreMap.get(genreId);
+
         final List<Game> resultList = new ArrayList<Game>();
 
-        for(final String gameId : gameGenreMap.get(genreId)) {
-            resultList.add(gameMap.get(gameId));
+        for(final Game game : getAllGames()) {
+            if(game.getGenreList().contains(genre)){
+                resultList.add(game);
+            }
         }
 
         return resultList;
@@ -136,15 +123,6 @@ public class Model implements Serializable{
 
         return null;
     }
-    
-    public void removeGenreForGame(@NotNull final String gameId, @NotNull final  String genreId) {
-        List<String> genreForGameList = gameGenreMap.get(gameId);
-
-        if(genreForGameList.contains(genreId)){
-            genreForGameList.remove(genreId);
-            gameGenreMap.get(genreId).remove(gameId);
-        }
-    }
 
     @Nullable
     public Game removeGameById(@NotNull final String gameId) {
@@ -153,12 +131,6 @@ public class Model implements Serializable{
         if(game == null) {
             return null;
         }
-
-        for(final String genreId : gameGenreMap.get(gameId)) {
-            gameGenreMap.get(genreId).remove(gameId);
-        }
-
-        gameGenreMap.remove(gameId);
 
         return game;
     }
@@ -171,11 +143,11 @@ public class Model implements Serializable{
             return null;
         }
 
-        for(final String gameId : gameGenreMap.get(genreId)) {
-            gameGenreMap.get(gameId).remove(genreId);
+        for(final Game game : getAllGames()) {
+            if(game.getGenreList().contains(genre)) {
+                game.getGenreList().remove(genre);
+            }
         }
-
-        gameGenreMap.remove(genreId);
 
         return genre;
     }

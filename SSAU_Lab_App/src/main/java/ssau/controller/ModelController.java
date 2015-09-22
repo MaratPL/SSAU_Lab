@@ -99,10 +99,6 @@ public class ModelController {
         return model.removeGenreById(genreId);
     }
 
-    public void removeGenreForGame(@NotNull final String gameId, @NotNull final  String genreId) {
-        model.removeGenreForGame(gameId, genreId);
-    }
-
     @NotNull
     public List<Game> getAllGames() {
         return new ArrayList<Game>(model.getAllGames());
