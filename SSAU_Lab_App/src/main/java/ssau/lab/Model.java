@@ -6,7 +6,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.Serializable;
 import java.util.*;
 
-public class Model implements Serializable{
+public class Model extends AbstractModel implements Serializable{
 
     
     // связь сущностей ИГРА и ЖАНР.
@@ -24,10 +24,17 @@ public class Model implements Serializable{
         genreMap = new HashMap<String, Genre>();
     }
 
+    private void update() {
+        for(@NotNull ssau.view.Observer observer : observerList) {
+            observer.update();
+        }
+    }
+
     @NotNull
     public Game createGame(@NotNull final String gameName, @NotNull final String gameCompany, @NotNull final List<Genre> genrelist) {
         Game game = new Game(gameName, gameCompany, genrelist);
         gameMap.put(game.getGameId(), game);
+        update();
         return game;
     }
 
@@ -35,6 +42,7 @@ public class Model implements Serializable{
     public Genre createGenre(@NotNull final String genreName) {
         Genre genre = new Genre(genreName);
         genreMap.put(genre.getGenreId(), genre);
+        update();
         return genre;
     }
 
@@ -103,6 +111,7 @@ public class Model implements Serializable{
             game.setGameName(gameName);
             game.setGameCompany(gameCompany);
             game.setGenreList(genreList);
+            update();
             return game;
         }
 
@@ -118,6 +127,7 @@ public class Model implements Serializable{
 
         if(genre != null) {
             genre.setGenreName(genreName);
+            update();
             return genre;
         }
 
@@ -131,7 +141,7 @@ public class Model implements Serializable{
         if(game == null) {
             return null;
         }
-
+        update();
         return game;
     }
 
@@ -148,7 +158,7 @@ public class Model implements Serializable{
                 game.getGenreList().remove(genre);
             }
         }
-
+        update();
         return genre;
     }
 

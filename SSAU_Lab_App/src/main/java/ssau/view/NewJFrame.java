@@ -3,9 +3,10 @@ package ssau.view;
 /**
  * Created by stpal on 17.09.2015.
  */
+
 import javax.swing.table.DefaultTableModel;
 
-public class NewJFrame extends javax.swing.JFrame {
+public class NewJFrame extends javax.swing.JFrame implements Observer{
 
     public NewJFrame() {
         initComponents();
@@ -192,5 +193,10 @@ public class NewJFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
+
+    @Override
+    public void update() {
+        this.repaint();
+    }
     // End of variables declaration
 }
