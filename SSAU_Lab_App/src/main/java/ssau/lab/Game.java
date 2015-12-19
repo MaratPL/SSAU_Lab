@@ -26,7 +26,7 @@ public class Game implements Serializable{
 
     }
 
-    public Game(@NotNull final String gameName, @NotNull final String gameCompany, @NotNull final List<Genre> genreList) {
+    public Game(@Nullable final String gameName, @Nullable final String gameCompany, @NotNull final List<Genre> genreList) {
         this.gameName = gameName;
         this.gameCompany = gameCompany;
         this.genreList = genreList;
@@ -51,7 +51,6 @@ public class Game implements Serializable{
         return gameCompany;
     }
 
-    @Nullable
     public void setGameCompany(@Nullable final String gameCompany) {
         this.gameCompany = gameCompany;
     }

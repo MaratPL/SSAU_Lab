@@ -24,22 +24,22 @@ public class Model extends AbstractModel implements Serializable{
         genreMap = new HashMap<String, Genre>();
     }
 
-    private void update() {
+    private synchronized void update() {
         for(@NotNull ssau.view.Observer observer : observerList) {
             observer.update();
         }
     }
 
     @NotNull
-    public Game createGame(@NotNull final String gameName, @NotNull final String gameCompany, @NotNull final List<Genre> genrelist) {
-        Game game = new Game(gameName, gameCompany, genrelist);
+    public synchronized Game createGame(@Nullable final String gameName, @Nullable final String gameCompany, @NotNull final List<Genre> genreList) {
+        Game game = new Game(gameName, gameCompany, genreList);
         gameMap.put(game.getGameId(), game);
         update();
         return game;
     }
 
     @NotNull
-    public Genre createGenre(@NotNull final String genreName) {
+    public synchronized Genre createGenre(@Nullable final String genreName) {
         Genre genre = new Genre(genreName);
         genreMap.put(genre.getGenreId(), genre);
         update();
@@ -48,7 +48,7 @@ public class Model extends AbstractModel implements Serializable{
 
 
     @Nullable
-    public Game getGameById(@NotNull final String gameId) {
+    public synchronized Game getGameById(@NotNull final String gameId) {
         if(gameMap.containsKey(gameId)) {
             return gameMap.get(gameId);
         }
@@ -57,7 +57,7 @@ public class Model extends AbstractModel implements Serializable{
     }
 
     @Nullable
-    public Genre getGenreById(@NotNull final String genreId) {
+    public synchronized Genre getGenreById(@NotNull final String genreId) {
         if(genreMap.containsKey(genreId)) {
             return genreMap.get(genreId);
         }
@@ -67,13 +67,13 @@ public class Model extends AbstractModel implements Serializable{
 
     // возввращает List всех жанров игры
     @NotNull
-    public List<Genre> getGameGenreList(@NotNull final String gameId) {
+    public synchronized List<Genre> getGameGenreList(@NotNull final String gameId) {
         return gameMap.get(gameId).getGenreList();
     }
 
     // возввращает List всех игр этого жанра
     @NotNull
-    public List<Game> getGenreGameList(@NotNull final String genreId) {
+    public synchronized List<Game> getGenreGameList(@NotNull final String genreId) {
 
         final Genre  genre = genreMap.get(genreId);
 
@@ -89,20 +89,20 @@ public class Model extends AbstractModel implements Serializable{
     }
 
     @NotNull
-    public Collection<Game> getAllGames() {
+    public synchronized Collection<Game> getAllGames() {
         return gameMap.values();
     }
 
     @NotNull
-    public Collection<Genre> getAllGenre() {
+    public synchronized Collection<Genre> getAllGenre() {
         return genreMap.values();
     }
 
     @Nullable
-    public Game updateGame(
+    public synchronized Game updateGame(
             @NotNull final String gameId,
-            @NotNull final String gameName,
-            @NotNull final String gameCompany,
+            @Nullable final String gameName,
+            @Nullable final String gameCompany,
             @NotNull final List<Genre> genreList
     ) {
         final Game game = gameMap.get(gameId);
@@ -119,9 +119,9 @@ public class Model extends AbstractModel implements Serializable{
     }
 
     @Nullable
-    public Genre updateGenre(
+    public synchronized Genre updateGenre(
             @NotNull final String genreId,
-            @NotNull final String genreName
+            @Nullable final String genreName
     ) {
         final Genre genre = genreMap.get(genreId);
 
@@ -135,7 +135,7 @@ public class Model extends AbstractModel implements Serializable{
     }
 
     @Nullable
-    public Game removeGameById(@NotNull final String gameId) {
+    public synchronized Game removeGameById(@NotNull final String gameId) {
         final Game game = gameMap.remove(gameId);
 
         if(game == null) {
@@ -146,7 +146,7 @@ public class Model extends AbstractModel implements Serializable{
     }
 
     @Nullable
-    public Genre removeGenreById(@NotNull final String genreId) {
+    public synchronized Genre removeGenreById(@NotNull final String genreId) {
         final Genre genre = genreMap.remove(genreId);
 
         if(genre == null) {
@@ -163,7 +163,7 @@ public class Model extends AbstractModel implements Serializable{
     }
 
     @NotNull
-    private List<String> getGenreIds(@NotNull final List<Genre> genrelist) {
+    private synchronized List<String> getGenreIds(@NotNull final List<Genre> genrelist) {
 
         if(genrelist.isEmpty()) {
             return new ArrayList<String>();

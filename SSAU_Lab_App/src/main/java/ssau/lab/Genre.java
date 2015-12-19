@@ -17,7 +17,7 @@ public class Genre implements Serializable{
     public Genre() {
     }
 
-    public Genre(@NotNull final String name) {
+    public Genre(@Nullable final String name) {
         genreName = name;
     }
 

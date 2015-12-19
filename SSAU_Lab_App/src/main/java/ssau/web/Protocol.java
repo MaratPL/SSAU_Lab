@@ -1,6 +1,7 @@
 package ssau.web;
 
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
@@ -10,11 +11,46 @@ public class Protocol implements Serializable {
     @Nullable
     private String id;
 
-    @Nullable
+    @NotNull
     private OperationType operationType;
 
     @Nullable
-    private String value;
+    private ObjectType objectType;
+
+    @Nullable
+    private Object value;
+
+    private boolean isError = false;
+
+    public Protocol(
+            @Nullable final String id,
+            @NotNull final OperationType operationType,
+            @Nullable final ObjectType objectType,
+            @Nullable final Object value
+    ) {
+        this.id = id;
+        this.operationType = operationType;
+        this.objectType = objectType;
+        this.value = value;
+    }
+
+    public Protocol(@NotNull final OperationType operationType, boolean isError) {
+        this.operationType = operationType;
+        this.isError = isError;
+    }
+
+    public Protocol(
+            @Nullable final OperationType operationType,
+            @Nullable final ObjectType objectType,
+            @Nullable final Object value,
+            boolean isError
+    ) {
+        this.id = id;
+        this.operationType = operationType;
+        this.objectType = objectType;
+        this.value = value;
+        this.isError = isError;
+    }
 
     @Nullable
     public String getId() {
@@ -35,11 +71,28 @@ public class Protocol implements Serializable {
     }
 
     @Nullable
-    public String getValue() {
+    public Object getValue() {
         return value;
     }
 
-    public void setValue(@Nullable String value) {
+    public void setValue(@Nullable Object value) {
         this.value = value;
+    }
+
+    @Nullable
+    public ObjectType getObjectType() {
+        return objectType;
+    }
+
+    public void setObjectType(@Nullable ObjectType objectType) {
+        this.objectType = objectType;
+    }
+
+    public boolean isError() {
+        return isError;
+    }
+
+    public void setIsError(boolean isError) {
+        this.isError = isError;
     }
 }

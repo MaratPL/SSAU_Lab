@@ -1,12 +1,28 @@
 package ssau.web.server;
 
 
+import org.jetbrains.annotations.NotNull;
+import ssau.lab.Model;
+import ssau.web.client.Users;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Server {
+
+    @NotNull
+    private final static Users users = new Users();
+
+    @NotNull
+    private final static Model model = new Model();
+
+    @NotNull
+    private final static List<String> editableEntityList = new ArrayList<>();
+
     public static void main(String[] args) {
         try {
             //Создаем слушатель
@@ -17,7 +33,7 @@ public class Server {
                 while (client == null) {
                     client = socketListener.accept();
                 }
-                new ClientThread(client); //Создаем новый поток, которому передаем сокет
+                (new ClientThread(client)).start(); //Создаем новый поток, которому передаем сокет
             }
         } catch (SocketException e) {
             System.err.println("Socket exception");
@@ -26,5 +42,20 @@ public class Server {
             System.err.println("I/O exception");
             e.printStackTrace();
         }
+    }
+
+    @NotNull
+    public static Model getModel() {
+        return model;
+    }
+
+    @NotNull
+    public static Users getUsers() {
+        return users;
+    }
+
+    @NotNull
+    public synchronized static List<String> getEditableEntityList() {
+        return editableEntityList;
     }
 }
