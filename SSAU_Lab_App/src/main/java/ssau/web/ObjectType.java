@@ -6,7 +6,7 @@ public enum ObjectType {
 
     GAME("Игра"),
     GENRE("Жанр"),
-    GAME_LIST("СПисок игр"),
+    GAME_LIST("Сиисок игр"),
     GENRE_LIST("Список жанров");
 
     @NotNull

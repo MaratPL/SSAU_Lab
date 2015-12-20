@@ -80,7 +80,7 @@ public class Protocol implements Serializable {
         return operationType;
     }
 
-    public void setOperationType(@Nullable OperationType operationType) {
+    public void setOperationType(@NotNull OperationType operationType) {
         this.operationType = operationType;
     }
 

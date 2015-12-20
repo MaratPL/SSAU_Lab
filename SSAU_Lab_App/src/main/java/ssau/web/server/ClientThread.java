@@ -157,8 +157,6 @@ public class ClientThread extends Thread {
                                     break;
                                 }
                             }
-                        case SUBSCRIBE:
-                            break;
                         case GET_ENTITY:
                             final String entityId = (String) protocol.getValue();
                             if (protocol.getObjectType() == ObjectType.GAME) {
@@ -188,10 +186,6 @@ public class ClientThread extends Thread {
                                 final List<Genre> result = new ArrayList<>(Server.getModel().getAllGenre());
                                 outputStream.writeObject(new Protocol(OperationType.GET_LIST_ENTITY, ObjectType.GENRE_LIST, result, false));
                             }
-                        case UNSUBSCRIBE:
-                            break;
-                        case ERROR:
-                            break;
                     }
                 } else {
                     outputStream.writeObject(new Protocol(OperationType.ERROR, true));
