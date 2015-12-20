@@ -1,4 +1,6 @@
-package ssau.web.client;
+package ssau.web.server;
+
+import ssau.web.server.Client;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;

@@ -1,4 +1,4 @@
-package ssau.web.client;
+package ssau.web.server;
 
 
 import org.jetbrains.annotations.NotNull;

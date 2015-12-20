@@ -3,7 +3,6 @@ package ssau.web.server;
 
 import org.jetbrains.annotations.NotNull;
 import ssau.lab.Model;
-import ssau.web.client.Users;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -27,6 +26,7 @@ public class Server {
         try {
             //Создаем слушатель
             ServerSocket socketListener = new ServerSocket(4444);
+            System.out.println("Start server...");
 
             while (true) {
                 Socket client = null;

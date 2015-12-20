@@ -5,6 +5,8 @@ import org.jetbrains.annotations.NotNull;
 
 public enum OperationType {
     SUBSCRIBE("Подписаться"),
+    GET_ENTITY("Получить сущность"),
+    GET_LIST_ENTITY("Получить список сущностей"),
     CREATE_ENTITY("Создание сущности"),
     DELETE_ENTITY("Удаление сущности"),
     BEGIN_EDITING_ENTITY("Начало редактирования сущности"),

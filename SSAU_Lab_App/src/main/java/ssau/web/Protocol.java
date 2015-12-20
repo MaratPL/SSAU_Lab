@@ -40,7 +40,21 @@ public class Protocol implements Serializable {
     }
 
     public Protocol(
-            @Nullable final OperationType operationType,
+            @NotNull final OperationType operationType,
+            @Nullable final ObjectType objectType,
+            @Nullable final Object value,
+            boolean isError
+    ) {
+        this.id = id;
+        this.operationType = operationType;
+        this.objectType = objectType;
+        this.value = value;
+        this.isError = isError;
+    }
+
+    public Protocol(
+            @NotNull final String id,
+            @NotNull final OperationType operationType,
             @Nullable final ObjectType objectType,
             @Nullable final Object value,
             boolean isError
