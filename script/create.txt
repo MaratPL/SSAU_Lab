@@ -1,0 +1,51 @@
+CREATE TABLE IF NOT EXISTS game (
+    id VARCHAR(36) NOT NULL,
+    name VARCHAR(50) NOT NULL,
+    company VARCHAR(50) NOT NULL,
+
+    CONSTRAINT game_pk PRIMARY KEY (id)
+);
+
+CREATE TABLE IF NOT EXISTS genre (
+    id VARCHAR(36) NOT NULL,
+    name VARCHAR(50) NOT NULL,
+
+    CONSTRAINT genre_pk PRIMARY KEY (id)
+);
+
+CREATE TABLE IF NOT EXISTS relation (
+    id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    game_id VARCHAR(36) NOT NULL,
+    genre_id VARCHAR(36) NOT NULL,
+
+    CONSTRAINT relation_pk PRIMARY KEY (id),
+	CONSTRAINT relation_fk1 FOREIGN KEY (game_id)
+        REFERENCES game (id) ON UPDATE CASCADE ON DELETE RESTRICT,
+	CONSTRAINT relation_fk2 FOREIGN KEY (genre_id)
+        REFERENCES genre (id) ON UPDATE CASCADE ON DELETE RESTRICT
+);
+
+INSERT INTO game VALUES
+('1', 'DOTA2', 'VALVE'),
+('2', 'Hearthstone', 'Blizzard'),
+('3', 'World of warcraft', 'Blizzard'),
+('4', 'Star craft 2', 'Blizzard'),
+('5', 'Diablo 3', 'Blizzard');
+
+INSERT INTO genre VALUES
+('1', 'Online'),
+('2', 'Real-time strategy'),
+('3', 'Role-playing game'),
+('4', 'Collectible card'),
+('5', 'Action');
+
+INSERT INTO genre VALUES
+(NULL, '1', '1'),
+(NULL, '2', '1'),
+(NULL, '2', '4'),
+(NULL, '3', '1'),
+(NULL, '3', '3'),
+(NULL, '4', '1'),
+(NULL, '4', '2'),
+(NULL, '5', '3'),
+(NULL, '5', '5');
