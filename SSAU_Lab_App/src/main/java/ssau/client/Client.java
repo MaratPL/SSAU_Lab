@@ -35,8 +35,12 @@ public class Client {
             ois = (ObjectInputStream)socket.getInputStream();
         } catch (IOException e) {
             e.printStackTrace();
-//сделать нормальную обработку
+//пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         }
+    }
+
+    public ModelController getModel(){
+        return modelController;
     }
 
     @NotNull
