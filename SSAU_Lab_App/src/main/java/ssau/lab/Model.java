@@ -73,10 +73,7 @@ public class Model extends AbstractModel implements Serializable{
 
     // возввращает List всех игр этого жанра
     @NotNull
-    public synchronized List<Game> getGenreGameList(@NotNull final String genreId) {
-
-        final Genre  genre = genreMap.get(genreId);
-
+    public List<Game> getGenreGameList(@NotNull final String genreId) {
         final List<Game> resultList = new ArrayList<Game>();
 
         for(final Game game : getAllGames()) {
@@ -165,7 +162,7 @@ public class Model extends AbstractModel implements Serializable{
     @NotNull
     private synchronized List<String> getGenreIds(@NotNull final List<Genre> genrelist) {
 
-        if(genrelist.isEmpty()) {
+        if(genrelist.isEmpty()||genrelist==null) {
             return new ArrayList<String>();
         }
 

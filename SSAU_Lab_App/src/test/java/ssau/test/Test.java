@@ -25,6 +25,8 @@ public class Test {
         @NotNull
         final ModelController modelController = new ModelController();
 
+
+
         try {
             modelController.writeModelInFile("out.txt");
             model1 = modelController.readModelFromFile("out.txt");
@@ -55,9 +57,14 @@ public class Test {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new NewJFrame().setVisible(true);
+
+                NewJFrame myFrame = new NewJFrame();
+                myFrame.addController(modelController);
+                myFrame.setVisible(true);
             }
         });
+
+
 
    /*
         for (int i = 0; i < 10; i++) {

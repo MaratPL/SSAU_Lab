@@ -11,7 +11,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ModelController {
+public class ModelController{
 
     @NotNull
     private Model model;
@@ -41,7 +41,7 @@ public class ModelController {
     public Game addGame(
             @NotNull final String gameName,
             @NotNull final String gameCompany,
-            @NotNull final List<Genre> genrelist
+            @Nullable final List<Genre> genrelist
     ) {
         return model.createGame(gameName, gameCompany, genrelist);
     }
@@ -108,6 +108,5 @@ public class ModelController {
     public List<Genre> getAllGenres() {
         return new ArrayList<Genre>(model.getAllGenre());
     }
-
 
 }
