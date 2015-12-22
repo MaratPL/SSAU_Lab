@@ -5,7 +5,6 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -13,7 +12,6 @@ import java.util.List;
 import java.util.UUID;
 
 
-@XmlRootElement(name = "game")
 @XmlType(propOrder = {"gameId","gameName", "gameCompany","genreList"})
 public class Game implements Serializable{
 
@@ -26,8 +24,7 @@ public class Game implements Serializable{
     @Nullable
     private String gameCompany;
 
-    @XmlElement(name = "genreList")
-    @XmlElementWrapper
+
     @NotNull
     private List<Genre> genreList = new ArrayList<>();
 
@@ -72,6 +69,8 @@ public class Game implements Serializable{
         return genreList;
     }
 
+    @XmlElement(name = "genre")
+    @XmlElementWrapper
     public void setGenreList(@NotNull final List<Genre> genreList) {
         this.genreList = genreList;
     }

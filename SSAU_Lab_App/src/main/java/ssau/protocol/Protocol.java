@@ -3,13 +3,17 @@ package ssau.protocol;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import ssau.lab.Game;
+import ssau.lab.Genre;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 
 @XmlRootElement(name = "protocol")
 @XmlType(propOrder = {"id","operationType", "objectType", "value"})
+@XmlSeeAlso({Genre.class, Game.class})
 public class Protocol implements Serializable {
 
     @Nullable
