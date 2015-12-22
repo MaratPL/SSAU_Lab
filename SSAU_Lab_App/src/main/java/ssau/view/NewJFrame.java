@@ -5,6 +5,8 @@ import ssau.client.ServerResponseListner;
 import ssau.controller.ModelController;
 import ssau.lab.Game;
 import ssau.lab.Genre;
+import ssau.view.updateDialog.UpdateGameDialog;
+import ssau.view.updateDialog.UpdateGenreDialog;
 import ssau.web.OperationType;
 import ssau.web.Protocol;
 
@@ -459,35 +461,21 @@ public class NewJFrame extends javax.swing.JFrame {
 
 
     //�� ������� �������� � COMBO BOX
-    private void updateGameButton1MouseClicked(java.awt.event.MouseEvent evt) {
+    private void updateGameButton1MouseClicked(java.awt.event.MouseEvent evt){
         int i = allGamesTable1.getSelectedRow();
         if(i>=0){
             DefaultTableModel model = (DefaultTableModel) allGamesTable1.getModel();
-
-            String gameName = gameNameTextField1.getText();
-            String gameData = gameDataTextField1.getText();
             String gameId = model.getValueAt(i,0).toString();
-
-            final List<Genre> tempList = new ArrayList<Genre>();
-            if (client.getModel().getAllGenres().isEmpty()) {
-                client.getModel().updateGame(gameId, gameName, gameData, new ArrayList<Genre>());
-            } else {
-                tempList.add(client.getModel().getAllGenres().get(gamePanelComboBox1.getSelectedIndex()));
+            Game game = client.getModel().getGameById(gameId);
+            List<Genre> genres = client.getModel().getAllGenres();
+            Map<String, String> genresMap = new HashMap<String, String>();
+            for (Genre genre: genres){
+                genresMap.put(genre.getGenreName(), genre.getGenreId());
             }
-
-            model.setRowCount(0);
-
-            List<Game> allGames = client.getModel().getAllGames();
-            for(final Game game:allGames) {
-                if (game.getGenreList().size() != 0) {
-                    String genre = game.getGenreList().get(0).getGenreName();
-                    model.addRow(new String[]{game.getGameId(), game.getGameName(), game.getGameCompany(), genre});
-                } else {
-                    model.addRow(new String[]{game.getGameId(), game.getGameName(), game.getGameCompany()});
-                }
-            }
+            UpdateGameDialog dialog = new UpdateGameDialog(game, genresMap, client);
+            dialog.setVisible(true);
         }else {
-            System.out.println("Update Game Error!!!");
+            JOptionPane.showMessageDialog(null, " ошибка обновления ", "Ни одна игра не выбрана", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -545,22 +533,12 @@ public class NewJFrame extends javax.swing.JFrame {
         int i = allGenreTable1.getSelectedRow();
         if(i>=0){
             DefaultTableModel model = (DefaultTableModel) allGenreTable1.getModel();
-
             String genreId = model.getValueAt(i,0).toString();
-            String genreName = genreNameTextField.getText();
-
-            List<Game> tempList = new ArrayList<Game>();
-
-            client.getModel().updateGenre(genreId, genreName);
-
-            model.setRowCount(0);
-
-            List<Genre> allGenres = client.getModel().getAllGenres();
-            for(final Genre genre:allGenres){
-                model.addRow(new String[]{genre.getGenreId(), genre.getGenreName()});
-            }
+            Genre genre = client.getModel().getGenreById(genreId);
+            UpdateGenreDialog dialog = new UpdateGenreDialog(genre, client);
+            dialog.setVisible(true);
         }else {
-            System.out.println("Update Genre Error!!!");
+            JOptionPane.showMessageDialog(null, " ошибка обновления ", "Ни один жанр не выбран", JOptionPane.ERROR_MESSAGE);
         }
     }
 

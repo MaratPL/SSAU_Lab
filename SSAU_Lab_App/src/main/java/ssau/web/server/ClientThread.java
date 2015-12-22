@@ -51,19 +51,14 @@ public class ClientThread extends Thread {
                         case CREATE_ENTITY:
                             if (protocol.getObjectType() == ObjectType.GAME) {
                                 final Game game = (Game) protocol.getValue();
-                                System.out.println("братишка, новый гейм принёс");
                                 final Game result =
                                         Server.getModel().createGame(game.getGameName(), game.getGameCompany(), game.getGenreList());
                                 broadcast(Server.getUsers().getClientList(), new Protocol(id, OperationType.CREATE_ENTITY, ObjectType.GAME, result, false));
-                                System.out.println("братишка, новый гейм принёс");
-
                             } else {
                                 final Genre genre = (Genre) protocol.getValue();
-                                System.out.println("братишка, новый генре принёс");
                                 final Genre result =
                                         Server.getModel().createGenre(genre.getGenreName());
                                 broadcast(Server.getUsers().getClientList(), new Protocol(id, OperationType.CREATE_ENTITY, ObjectType.GENRE, result, false));
-                                System.out.println("братишка, новый генре принёс");
                             }
                             break;
                         case DELETE_ENTITY:

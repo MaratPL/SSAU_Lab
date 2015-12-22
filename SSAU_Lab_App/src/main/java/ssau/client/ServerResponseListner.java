@@ -65,8 +65,8 @@ public class ServerResponseListner extends Thread {
                         case BEGIN_EDITING_ENTITY:
                             if (protocol.getObjectType() == ObjectType.GAME) {
                                 final Game game = (Game) protocol.getValue();
-                                //получаем табличку и там заменяем редактируемую строку
                                 final Game gameInMyModel = frame.getClient().getModel().getGameById(game.getGameId());
+
                             } else {
                                 final Genre genre = (Genre) protocol.getValue();
                                 final Genre genreInMyModel = frame.getClient().getModel().getGenreById(genre.getGenreId());

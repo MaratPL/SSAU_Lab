@@ -46,7 +46,8 @@ public class Client {
             @NotNull final String gameCompany,
             @NotNull final List<Genre> genrelist
     ) throws IOException {
-        Protocol protocol = new Protocol(id, OperationType.CREATE_ENTITY, ObjectType.GAME, modelController.addGame(gameName, gameCompany, genrelist));
+        Game game = new Game(gameName, gameCompany, genrelist);
+        Protocol protocol = new Protocol(id, OperationType.CREATE_ENTITY, ObjectType.GAME, game);
         oos.writeObject(protocol);
         oos.flush();
     }
@@ -81,30 +82,46 @@ public class Client {
         return result;
     }
 
+    public void sendRequestForEditGame(@NotNull final String gameId) throws IOException {
+        Game game = modelController.getGameById(gameId);
+        Protocol protocol = new Protocol(id, OperationType.BEGIN_EDITING_ENTITY, ObjectType.GAME, game);
+        oos.writeObject(protocol);
+        oos.flush();
+    }
+
+    public void sendRequestForEditGenre(@NotNull final String gameId) throws IOException {
+        Game game = modelController.getGameById(gameId);
+        Protocol protocol = new Protocol(id, OperationType.BEGIN_EDITING_ENTITY, ObjectType.GAME, game);
+        oos.writeObject(protocol);
+        oos.flush();
+    }
+
     @Nullable
-    public Game updateGame(
+    public void updateGame(
             @NotNull final String gameId,
             @NotNull final String gameName,
             @NotNull final String gameCompany,
             @NotNull final List<Genre> genreList
     ) throws IOException{
-        Game game = modelController.updateGame(gameId, gameName, gameCompany, genreList);
-        Protocol protocol = new Protocol(id, OperationType.BEGIN_EDITING_ENTITY, ObjectType.GAME, game);
+        Game game = modelController.getGameById(gameId);
+        game.setGameCompany(gameCompany);
+        game.setGenreList(genreList);
+        game.setGameName(gameName);
+        Protocol protocol = new Protocol(id, OperationType.END_EDITING_ENTITY, ObjectType.GAME, game);
         oos.writeObject(protocol);
         oos.flush();
-        return game;
     }
 
     @Nullable
-    private Genre updateGenre(
+    public void updateGenre(
             @NotNull final String genreId,
             @NotNull final String genreName
     ) throws IOException{
-        Genre genre = modelController.updateGenre(genreId, genreName);
-        Protocol protocol = new Protocol(id, OperationType.BEGIN_EDITING_ENTITY, ObjectType.GENRE, genre);
+        Genre genre = modelController.getGenreById(genreId);
+        genre.setGenreName(genreName);
+        Protocol protocol = new Protocol(id, OperationType.END_EDITING_ENTITY, ObjectType.GENRE, genre);
         oos.writeObject(protocol);
         oos.flush();
-        return genre;
     }
 
     @Nullable
