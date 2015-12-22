@@ -8,8 +8,8 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Server {
 
@@ -20,7 +20,7 @@ public class Server {
     private final static Model model = new Model();
 
     @NotNull
-    private final static List<String> editableEntityList = new ArrayList<>();
+    private final static Set<String> editableEntitySet = new HashSet<>();
 
     public static void main(String[] args) {
         try {
@@ -55,7 +55,7 @@ public class Server {
     }
 
     @NotNull
-    public synchronized static List<String> getEditableEntityList() {
-        return editableEntityList;
+    public synchronized static Set<String> getEditableEntitySet() {
+        return editableEntitySet;
     }
 }

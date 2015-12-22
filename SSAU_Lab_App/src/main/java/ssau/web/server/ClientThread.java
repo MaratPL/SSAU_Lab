@@ -3,9 +3,9 @@ package ssau.web.server;
 import org.jetbrains.annotations.NotNull;
 import ssau.lab.Game;
 import ssau.lab.Genre;
-import ssau.web.ObjectType;
-import ssau.web.OperationType;
-import ssau.web.Protocol;
+import ssau.protocol.ObjectType;
+import ssau.protocol.OperationType;
+import ssau.protocol.Protocol;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -64,7 +64,7 @@ public class ClientThread extends Thread {
                         case DELETE_ENTITY:
                             if (protocol.getObjectType() == ObjectType.GAME) {
                                 final Game game = (Game) protocol.getValue();
-                                if (Server.getEditableEntityList().contains(game.getGameId())) {
+                                if (Server.getEditableEntitySet().contains(game.getGameId())) {
                                     outputStream.writeObject(new Protocol(OperationType.ERROR, true));
                                     break;
                                 }
@@ -78,7 +78,7 @@ public class ClientThread extends Thread {
                                 }
                             } else {
                                 final Genre genre = (Genre) protocol.getValue();
-                                if (Server.getEditableEntityList().contains(genre.getGenreId())) {
+                                if (Server.getEditableEntitySet().contains(genre.getGenreId())) {
                                     outputStream.writeObject(new Protocol(OperationType.ERROR, true));
                                     break;
                                 }
@@ -95,14 +95,14 @@ public class ClientThread extends Thread {
                         case BEGIN_EDITING_ENTITY:
                             if (protocol.getObjectType() == ObjectType.GAME) {
                                 final Game game = (Game) protocol.getValue();
-                                if (Server.getEditableEntityList().contains(game.getGameId())) {
+                                if (Server.getEditableEntitySet().contains(game.getGameId())) {
                                     outputStream.writeObject(new Protocol(OperationType.ERROR, true));
                                     break;
                                 }
                                 final Game result =
                                         Server.getModel().getGameById(game.getGameId());
                                 if (result != null) {
-                                    Server.getEditableEntityList().add(result.getGameId());
+                                    Server.getEditableEntitySet().add(result.getGameId());
                                     broadcast(Server.getUsers().getClientList(), new Protocol(id, OperationType.BEGIN_EDITING_ENTITY, ObjectType.GAME, result, false));
                                 } else {
                                     outputStream.writeObject(new Protocol(OperationType.ERROR, true));
@@ -110,7 +110,7 @@ public class ClientThread extends Thread {
                                 }
                             } else {
                                 final Genre genre = (Genre) protocol.getValue();
-                                if (Server.getEditableEntityList().contains(genre.getGenreId())) {
+                                if (Server.getEditableEntitySet().contains(genre.getGenreId())) {
                                     outputStream.writeObject(new Protocol(OperationType.ERROR, true));
                                     System.out.println("не редактируй бро1");
                                     break;
@@ -118,7 +118,7 @@ public class ClientThread extends Thread {
                                 final Genre result =
                                         Server.getModel().getGenreById(genre.getGenreId());
                                 if (result != null) {
-                                    Server.getEditableEntityList().add(result.getGenreId());
+                                    Server.getEditableEntitySet().add(result.getGenreId());
                                     broadcast(Server.getUsers().getClientList(), new Protocol(id, OperationType.BEGIN_EDITING_ENTITY, ObjectType.GENRE, result, false));
                                     System.out.println("редактируй бро");
                                 } else {
@@ -127,17 +127,18 @@ public class ClientThread extends Thread {
                                     break;
                                 }
                             }
+                            break;
                         case END_EDITING_ENTITY:
                             if (protocol.getObjectType() == ObjectType.GAME) {
                                 final Game game = (Game) protocol.getValue();
-                                if (!Server.getEditableEntityList().contains(game.getGameId())) {
+                                if (!Server.getEditableEntitySet().contains(game.getGameId())) {
                                     outputStream.writeObject(new Protocol(OperationType.ERROR, true));
                                     break;
                                 }
                                 final Game result =
                                         Server.getModel().updateGame(game.getGameId(), game.getGameName(), game.getGameCompany(), game.getGenreList());
                                 if (result != null) {
-                                    Server.getEditableEntityList().remove(result.getGameId());
+                                    Server.getEditableEntitySet().remove(result.getGameId());
                                     broadcast(Server.getUsers().getClientList(), new Protocol(id, OperationType.END_EDITING_ENTITY, ObjectType.GAME, result, false));
                                 } else {
                                     outputStream.writeObject(new Protocol(OperationType.ERROR, true));
@@ -145,20 +146,21 @@ public class ClientThread extends Thread {
                                 }
                             } else {
                                 final Genre genre = (Genre) protocol.getValue();
-                                if (!Server.getEditableEntityList().contains(genre.getGenreId())) {
+                                if (!Server.getEditableEntitySet().contains(genre.getGenreId())) {
                                     outputStream.writeObject(new Protocol(OperationType.ERROR, true));
                                     break;
                                 }
                                 final Genre result =
                                         Server.getModel().updateGenre(genre.getGenreId(), genre.getGenreName());
                                 if (result != null) {
-                                    Server.getEditableEntityList().remove(result.getGenreId());
+                                    Server.getEditableEntitySet().remove(result.getGenreId());
                                     broadcast(Server.getUsers().getClientList(), new Protocol(id, OperationType.END_EDITING_ENTITY, ObjectType.GENRE, result, false));
                                 } else {
                                     outputStream.writeObject(new Protocol(OperationType.ERROR, true));
                                     break;
                                 }
                             }
+                            break;
                         case GET_ENTITY:
                             final String entityId = (String) protocol.getValue();
                             if (protocol.getObjectType() == ObjectType.GAME) {
@@ -180,6 +182,7 @@ public class ClientThread extends Thread {
                                     break;
                                 }
                             }
+                            break;
                         case GET_LIST_ENTITY:
                             if (protocol.getObjectType() == ObjectType.GAME_LIST) {
                                 final List<Game> result = new ArrayList<>(Server.getModel().getAllGames());
@@ -188,6 +191,7 @@ public class ClientThread extends Thread {
                                 final List<Genre> result = new ArrayList<>(Server.getModel().getAllGenre());
                                 outputStream.writeObject(new Protocol(OperationType.GET_LIST_ENTITY, ObjectType.GENRE_LIST, result, false));
                             }
+                            break;
                     }
                 } else {
                     outputStream.writeObject(new Protocol(OperationType.ERROR, true));
@@ -213,10 +217,10 @@ public class ClientThread extends Thread {
 
     }
 
-    private void broadcast(@NotNull final List<Client> clientList, @NotNull final Protocol protocol) {
+    private void broadcast(@NotNull final List<ServerClient> serverClientList, @NotNull final Protocol protocol) {
         try {
-            for (final Client client : clientList) {
-                client.getThisObjectOutputStream().writeObject(protocol);
+            for (final ServerClient serverClient : serverClientList) {
+                serverClient.getThisObjectOutputStream().writeObject(protocol);
             }
         } catch (SocketException e) {
             System.out.println("In broadcast: " + id + " disconnected!");

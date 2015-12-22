@@ -12,9 +12,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
 
-/**
- * Created by kolesnikov on 22.12.15.
- */
 public class UpdateGameDialog extends AbstractDialog  {
 
     private Client client;

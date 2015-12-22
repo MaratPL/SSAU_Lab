@@ -5,14 +5,13 @@ import org.jetbrains.annotations.Nullable;
 import ssau.controller.ModelController;
 import ssau.lab.Game;
 import ssau.lab.Genre;
-import ssau.web.ObjectType;
-import ssau.web.OperationType;
-import ssau.web.Protocol;
+import ssau.protocol.ObjectType;
+import ssau.protocol.OperationType;
+import ssau.protocol.Protocol;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;

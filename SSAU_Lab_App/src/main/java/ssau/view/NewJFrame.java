@@ -2,19 +2,17 @@ package ssau.view;
 
 import ssau.client.Client;
 import ssau.client.ServerResponseListner;
-import ssau.controller.ModelController;
 import ssau.lab.Game;
 import ssau.lab.Genre;
 import ssau.view.updateDialog.UpdateGameDialog;
 import ssau.view.updateDialog.UpdateGenreDialog;
-import ssau.web.OperationType;
-import ssau.web.Protocol;
+import ssau.protocol.OperationType;
+import ssau.protocol.Protocol;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
-import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.ActionEvent;

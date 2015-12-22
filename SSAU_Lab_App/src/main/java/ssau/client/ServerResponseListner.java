@@ -3,20 +3,14 @@ package ssau.client;
 import ssau.lab.Game;
 import ssau.lab.Genre;
 import ssau.view.NewJFrame;
-import ssau.web.ObjectType;
-import ssau.web.OperationType;
-import ssau.web.Protocol;
-import ssau.web.server.Server;
+import ssau.protocol.ObjectType;
+import ssau.protocol.Protocol;
 
-import javax.swing.*;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
-/**
-* Created by kolesnikov on 21.12.15.
-*/
 public class ServerResponseListner extends Thread {
 
     private Socket socket;
@@ -42,11 +36,11 @@ public class ServerResponseListner extends Thread {
                         case CREATE_ENTITY:
                             if (protocol.getObjectType() == ObjectType.GAME) {
                                 final Game game = (Game) protocol.getValue();
-                                frame.getClient().getModel().addGame(game.getGameName(), game.getGameCompany(), game.getGenreList());
+                                frame.getClient().getModel().addGame(game);
                                 frame.updateGamesTable();
                             } else {
                                 final Genre genre = (Genre) protocol.getValue();
-                                frame.getClient().getModel().addGenre(genre.getGenreName());
+                                frame.getClient().getModel().addGenre(genre);
                                 frame.updateGenresTable();
                             }
                             break;
@@ -89,8 +83,6 @@ public class ServerResponseListner extends Thread {
                                 frame.updateGenresTable();
                             }
                             break;
-                        case ERROR:
-                            ;
                     }
                 }
             } catch (IOException e) {

@@ -1,4 +1,4 @@
-package ssau.web;
+package ssau.protocol;
 
 
 import org.jetbrains.annotations.NotNull;

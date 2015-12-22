@@ -109,4 +109,12 @@ public class ModelController{
         return new ArrayList<Genre>(model.getAllGenre());
     }
 
+    public void addGame(@NotNull final Game game) {
+        model.addGame(game);
+    }
+
+    public void addGenre(@NotNull final Genre genre) {
+        model.addGanre(genre);
+    }
+
 }

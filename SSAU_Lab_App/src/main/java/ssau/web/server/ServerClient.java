@@ -7,17 +7,17 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
-public class Client {
+public class ServerClient {
 
     private Socket socket;
     private ObjectOutputStream oos;
     private ObjectInputStream ois;
 
-    public Client(@NotNull Socket socket){
+    public ServerClient(@NotNull Socket socket){
         this.socket = socket;
     }
 
-    public Client(@NotNull Socket socket , @NotNull ObjectOutputStream oos , @NotNull ObjectInputStream ois ){
+    public ServerClient(@NotNull Socket socket, @NotNull ObjectOutputStream oos, @NotNull ObjectInputStream ois){
         this.socket = socket;
         this.oos = oos;
         this.ois = ois;

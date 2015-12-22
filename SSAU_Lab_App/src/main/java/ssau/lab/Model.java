@@ -175,4 +175,12 @@ public class Model extends AbstractModel implements Serializable{
         return resultList;
     }
 
+    public void addGame(@NotNull final Game game) {
+        gameMap.put(game.getGameId(), game);
+    }
+
+    public void addGanre(@NotNull final Genre genre) {
+        genreMap.put(genre.getGenreId(), genre);
+    }
+
 }
