@@ -124,7 +124,7 @@ public class NewJFrame extends javax.swing.JFrame {
                     java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean[]{
-                    false, true, true, true
+                    false, false, false, true
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -223,7 +223,11 @@ public class NewJFrame extends javax.swing.JFrame {
         updateGameButton1.setText("Update Game");
         updateGameButton1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                updateGameButton1MouseClicked(evt);
+                try {
+                    updateGameButton1MouseClicked(evt);
+                } catch (IOException e) {
+                    JOptionPane.showMessageDialog(null, " ошибка обновления ", "ошибка обновления", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
 
@@ -306,14 +310,14 @@ public class NewJFrame extends javax.swing.JFrame {
 
                 },
                 new String[]{
-                        "genre id", "genre Nam", "genre Games"
+                        "genre id", "genre Name"
                 }
         ) {
             Class[] types = new Class[]{
-                    java.lang.String.class, java.lang.String.class, java.lang.String.class
+                    java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean[]{
-                    false, true, false
+                    false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -350,7 +354,11 @@ public class NewJFrame extends javax.swing.JFrame {
         updateGenreButton1.setText("Update Genre");
         updateGenreButton1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                updateGenreButton1MouseClicked(evt);
+                try {
+                    updateGenreButton1MouseClicked(evt);
+                } catch (IOException e) {
+                    JOptionPane.showMessageDialog(null, " ошибка обновления ", "ошибка обновления", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
         updateGenreButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -461,22 +469,26 @@ public class NewJFrame extends javax.swing.JFrame {
 
 
     //�� ������� �������� � COMBO BOX
-    private void updateGameButton1MouseClicked(java.awt.event.MouseEvent evt){
+    private void updateGameButton1MouseClicked(java.awt.event.MouseEvent evt) throws IOException {
         int i = allGamesTable1.getSelectedRow();
         if(i>=0){
             DefaultTableModel model = (DefaultTableModel) allGamesTable1.getModel();
             String gameId = model.getValueAt(i,0).toString();
             Game game = client.getModel().getGameById(gameId);
-            List<Genre> genres = client.getModel().getAllGenres();
-            Map<String, String> genresMap = new HashMap<String, String>();
-            for (Genre genre: genres){
-                genresMap.put(genre.getGenreName(), genre.getGenreId());
-            }
-            UpdateGameDialog dialog = new UpdateGameDialog(game, genresMap, client);
-            dialog.setVisible(true);
+            client.sendRequestForEditGame(game.getGameId());
         }else {
             JOptionPane.showMessageDialog(null, " ошибка обновления ", "Ни одна игра не выбрана", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    public void beginUpdateGame(Game game){
+        List<Genre> genres = client.getModel().getAllGenres();
+        Map<String, String> genresMap = new HashMap<String, String>();
+        for (Genre genre: genres){
+            genresMap.put(genre.getGenreName(), genre.getGenreId());
+        }
+        UpdateGameDialog dialog = new UpdateGameDialog(game, genresMap, client);
+        dialog.setVisible(true);
     }
 
     private void deleteGameMouseClicked(java.awt.event.MouseEvent evt) {
@@ -506,40 +518,52 @@ public class NewJFrame extends javax.swing.JFrame {
         gameName = gameNameTextField1.getText();
         gameData = gameDataTextField1.getText();
 
+//        List<Genre> tempList = new ArrayList<Genre>();
+//        if(gamePanelComboBox1.getSelectedItem() != null){
+//            tempList.add(client.getModel().getGenreById(gamePanelComboBox1.getSelectedItem().toString()));
+//        }
         List<Genre> tempList = new ArrayList<Genre>();
-        if(gamePanelComboBox1.getSelectedItem() != null){
-            tempList.add(client.getModel().getGenreById(gamePanelComboBox1.getSelectedItem().toString()));
+        try {
+            client.addGame(gameName, gameData, tempList);
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, " ошибка добавления ", "ошибка", JOptionPane.ERROR_MESSAGE);
+            return;
         }
-
-        client.getModel().addGame(gameName,gameData,tempList);
-
-        DefaultTableModel model = (DefaultTableModel) allGamesTable1.getModel();
-        model.setRowCount(0);
-
-        List<Game> allGames = client.getModel().getAllGames();
-        for(final Game game:allGames) {
-            if (game.getGenreList().size() != 0) {
-                String genre = game.getGenreList().get(0).getGenreName();
-                model.addRow(new String[]{game.getGameId(), game.getGameName(), game.getGameCompany(), genre});
-            } else {
-                model.addRow(new String[]{game.getGameId(), game.getGameName(), game.getGameCompany()});
-            }
-        }
+        updateGamesTable();
+//        client.getModel().addGame(gameName,gameData,tempList);
+//
+//        DefaultTableModel model = (DefaultTableModel) allGamesTable1.getModel();
+//        model.setRowCount(0);
+//
+//        List<Game> allGames = client.getModel().getAllGames();
+//        for(final Game game:allGames) {
+//            if (game.getGenreList().size() != 0) {
+//                String genre = game.getGenreList().get(0).getGenreName();
+//                model.addRow(new String[]{game.getGameId(), game.getGameName(), game.getGameCompany(), genre});
+//            } else {
+//                model.addRow(new String[]{game.getGameId(), game.getGameName(), game.getGameCompany()});
+//            }
+//        }
     }
 
     //������ ������ ��������� ������ ��� � ������??? (�������� ��� ���������)
 
-    private void updateGenreButton1MouseClicked(java.awt.event.MouseEvent evt) {
+    private void updateGenreButton1MouseClicked(java.awt.event.MouseEvent evt) throws IOException {
         int i = allGenreTable1.getSelectedRow();
         if(i>=0){
             DefaultTableModel model = (DefaultTableModel) allGenreTable1.getModel();
             String genreId = model.getValueAt(i,0).toString();
             Genre genre = client.getModel().getGenreById(genreId);
-            UpdateGenreDialog dialog = new UpdateGenreDialog(genre, client);
-            dialog.setVisible(true);
+            client.sendRequestForEditGenre(genre.getGenreId());
         }else {
             JOptionPane.showMessageDialog(null, " ошибка обновления ", "Ни один жанр не выбран", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+
+    public void beginUpdateGenre(Genre genre){
+        UpdateGenreDialog dialog = new UpdateGenreDialog(genre, client);
+        dialog.setVisible(true);
     }
 
 
@@ -576,6 +600,21 @@ public class NewJFrame extends javax.swing.JFrame {
 
     }
 
+    public void updateGamesTable(){
+    DefaultTableModel model = (DefaultTableModel) allGamesTable1.getModel();
+        model.setRowCount(0);
+
+        List<Game> allGames = client.getModel().getAllGames();
+        for(final Game game:allGames) {
+            if (game.getGenreList().size() != 0) {
+                String genre = game.getGenreList().get(0).getGenreName();
+                model.addRow(new String[]{game.getGameId(), game.getGameName(), game.getGameCompany(), genre});
+            } else {
+                model.addRow(new String[]{game.getGameId(), game.getGameName(), game.getGameCompany()});
+            }
+        }
+    }
+
     public void updateGenresTable(){
         DefaultTableModel model = (DefaultTableModel) allGenreTable1.getModel();
         model.setRowCount(0);
@@ -584,10 +623,6 @@ public class NewJFrame extends javax.swing.JFrame {
         for(final Genre genre:allGenre){
             model.addRow(new String[]{genre.getGenreId(), genre.getGenreName()});
         }
-    }
-
-    public void updateGamesTable(){
-
     }
 
     private void updateGenreButton1ActionPerformed(java.awt.event.ActionEvent evt) {

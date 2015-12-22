@@ -43,6 +43,7 @@ public class ServerResponseListner extends Thread {
                             if (protocol.getObjectType() == ObjectType.GAME) {
                                 final Game game = (Game) protocol.getValue();
                                 frame.getClient().getModel().addGame(game.getGameName(), game.getGameCompany(), game.getGenreList());
+                                frame.updateGamesTable();
                             } else {
                                 final Genre genre = (Genre) protocol.getValue();
                                 frame.getClient().getModel().addGenre(genre.getGenreName());
@@ -66,18 +67,26 @@ public class ServerResponseListner extends Thread {
                             if (protocol.getObjectType() == ObjectType.GAME) {
                                 final Game game = (Game) protocol.getValue();
                                 final Game gameInMyModel = frame.getClient().getModel().getGameById(game.getGameId());
-
+                                frame.beginUpdateGame(gameInMyModel);
                             } else {
                                 final Genre genre = (Genre) protocol.getValue();
                                 final Genre genreInMyModel = frame.getClient().getModel().getGenreById(genre.getGenreId());
+                                frame.beginUpdateGenre(genreInMyModel);
                             }
                             break;
                         case END_EDITING_ENTITY:
                             if (protocol.getObjectType() == ObjectType.GAME) {
                                 final Game game = (Game) protocol.getValue();
-                                //получаем табличку и там заменяем редактируемую строку на то что в рехультате получилось
+                                Game myGame = frame.getClient().getModel().getGameById(game.getGameId());
+                                myGame.setGameCompany(game.getGameCompany());
+                                myGame.setGenreList(game.getGenreList());
+                                myGame.setGameName(game.getGameName());
+                                frame.updateGamesTable();
                             } else {
                                 final Genre genre = (Genre) protocol.getValue();
+                                Genre myGenre = frame.getClient().getModel().getGenreById(genre.getGenreId());
+                                myGenre.setGenreName(genre.getGenreName());
+                                frame.updateGenresTable();
                             }
                             break;
                         case ERROR:

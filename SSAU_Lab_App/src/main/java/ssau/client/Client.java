@@ -90,8 +90,8 @@ public class Client {
     }
 
     public void sendRequestForEditGenre(@NotNull final String gameId) throws IOException {
-        Game game = modelController.getGameById(gameId);
-        Protocol protocol = new Protocol(id, OperationType.BEGIN_EDITING_ENTITY, ObjectType.GAME, game);
+        Genre genre = modelController.getGenreById(gameId);
+        Protocol protocol = new Protocol(id, OperationType.BEGIN_EDITING_ENTITY, ObjectType.GENRE, genre);
         oos.writeObject(protocol);
         oos.flush();
     }

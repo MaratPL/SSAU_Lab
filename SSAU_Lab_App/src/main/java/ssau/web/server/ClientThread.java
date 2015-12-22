@@ -112,6 +112,7 @@ public class ClientThread extends Thread {
                                 final Genre genre = (Genre) protocol.getValue();
                                 if (Server.getEditableEntityList().contains(genre.getGenreId())) {
                                     outputStream.writeObject(new Protocol(OperationType.ERROR, true));
+                                    System.out.println("не редактируй бро1");
                                     break;
                                 }
                                 final Genre result =
@@ -119,8 +120,10 @@ public class ClientThread extends Thread {
                                 if (result != null) {
                                     Server.getEditableEntityList().add(result.getGenreId());
                                     broadcast(Server.getUsers().getClientList(), new Protocol(id, OperationType.BEGIN_EDITING_ENTITY, ObjectType.GENRE, result, false));
+                                    System.out.println("редактируй бро");
                                 } else {
                                     outputStream.writeObject(new Protocol(OperationType.ERROR, true));
+                                    System.out.println("не редактируй бро2");
                                     break;
                                 }
                             }
