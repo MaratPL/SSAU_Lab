@@ -12,6 +12,7 @@ import ssau.protocol.Protocol;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+import javax.xml.bind.JAXBException;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -225,6 +226,8 @@ public class NewJFrame extends javax.swing.JFrame {
                     updateGameButton1MouseClicked(evt);
                 } catch (IOException e) {
                     JOptionPane.showMessageDialog(null, " ошибка обновления ", "ошибка обновления", JOptionPane.ERROR_MESSAGE);
+                } catch (JAXBException e) {
+                    e.printStackTrace();
                 }
             }
         });
@@ -356,6 +359,8 @@ public class NewJFrame extends javax.swing.JFrame {
                     updateGenreButton1MouseClicked(evt);
                 } catch (IOException e) {
                     JOptionPane.showMessageDialog(null, " ошибка обновления ", "ошибка обновления", JOptionPane.ERROR_MESSAGE);
+                } catch (JAXBException e) {
+                    e.printStackTrace();
                 }
             }
         });
@@ -467,7 +472,7 @@ public class NewJFrame extends javax.swing.JFrame {
 
 
     //�� ������� �������� � COMBO BOX
-    private void updateGameButton1MouseClicked(java.awt.event.MouseEvent evt) throws IOException {
+    private void updateGameButton1MouseClicked(java.awt.event.MouseEvent evt) throws IOException, JAXBException {
         int i = allGamesTable1.getSelectedRow();
         if(i>=0){
             DefaultTableModel model = (DefaultTableModel) allGamesTable1.getModel();
@@ -526,6 +531,8 @@ public class NewJFrame extends javax.swing.JFrame {
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, " ошибка добавления ", "ошибка", JOptionPane.ERROR_MESSAGE);
             return;
+        } catch (JAXBException e) {
+            e.printStackTrace();
         }
         updateGamesTable();
 //        client.getModel().addGame(gameName,gameData,tempList);
@@ -546,7 +553,7 @@ public class NewJFrame extends javax.swing.JFrame {
 
     //������ ������ ��������� ������ ��� � ������??? (�������� ��� ���������)
 
-    private void updateGenreButton1MouseClicked(java.awt.event.MouseEvent evt) throws IOException {
+    private void updateGenreButton1MouseClicked(java.awt.event.MouseEvent evt) throws IOException, JAXBException {
         int i = allGenreTable1.getSelectedRow();
         if(i>=0){
             DefaultTableModel model = (DefaultTableModel) allGenreTable1.getModel();
@@ -593,6 +600,8 @@ public class NewJFrame extends javax.swing.JFrame {
         } catch (ClassNotFoundException e) {
             JOptionPane.showMessageDialog(null, " ошибка добавления ", "ошибка", JOptionPane.ERROR_MESSAGE);
             return;
+        } catch (JAXBException e) {
+            e.printStackTrace();
         }
         updateGenresTable();
 

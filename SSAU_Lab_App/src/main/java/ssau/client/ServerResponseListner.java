@@ -2,11 +2,12 @@ package ssau.client;
 
 import ssau.lab.Game;
 import ssau.lab.Genre;
-import ssau.view.NewJFrame;
+import ssau.parser.JAXBParser;
 import ssau.protocol.ObjectType;
 import ssau.protocol.Protocol;
+import ssau.view.NewJFrame;
 
-import java.io.IOException;
+import javax.xml.bind.JAXBException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
@@ -29,7 +30,7 @@ public class ServerResponseListner extends Thread {
     public void run(){
         while (socket.isConnected()){
             try {
-                Object object = objectInputStream.readObject();
+                Object object = JAXBParser.readObject(objectInputStream, Protocol.class);
                 if (object != null){
                     Protocol protocol = (Protocol) object;
                     switch (protocol.getOperationType()){
@@ -85,9 +86,7 @@ public class ServerResponseListner extends Thread {
                             break;
                     }
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
+            }  catch (JAXBException e) {
                 e.printStackTrace();
             }
         }

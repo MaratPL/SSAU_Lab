@@ -1,17 +1,27 @@
 package ssau.test;
 
-import org.jetbrains.annotations.NotNull;
-import ssau.controller.ModelController;
-import ssau.lab.Model;
-import ssau.view.NewJFrame;
+import ssau.lab.Genre;
+import ssau.parser.JAXBParser;
+import ssau.protocol.ObjectType;
+import ssau.protocol.OperationType;
+import ssau.protocol.Protocol;
 
+import javax.xml.bind.JAXBException;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.ObjectOutputStream;
 
 public class Test {
 
-//    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException, JAXBException {
+        File file = new File("output.txt");
+        FileOutputStream fileOutputStream = new FileOutputStream(file);
+        Genre genre = new Genre("Name");
+        Protocol protocol = new Protocol("лкр", OperationType.BEGIN_EDITING_ENTITY, ObjectType.GAME, genre);
+        JAXBParser.writeObject(new ObjectOutputStream(fileOutputStream), protocol);
+    }
+
 //
 //        @NotNull
 //        Model model1 = new Model();

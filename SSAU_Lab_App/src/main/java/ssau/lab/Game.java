@@ -3,15 +3,22 @@ package ssau.lab;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+
+@XmlRootElement(name = "game")
+@XmlType(propOrder = {"gameId","gameName", "gameCompany","genreList"})
 public class Game implements Serializable{
 
     @NotNull
-    private final String gameId = UUID.randomUUID().toString();
+    private String gameId = UUID.randomUUID().toString();
 
     @Nullable
     private String gameName;
@@ -19,11 +26,12 @@ public class Game implements Serializable{
     @Nullable
     private String gameCompany;
 
+    @XmlElement(name = "genreList")
+    @XmlElementWrapper
     @NotNull
-    private List<Genre> genreList = new ArrayList<Genre>();
-    
-    public Game() {
+    private List<Genre> genreList = new ArrayList<>();
 
+    public Game() {
     }
 
     public Game(@Nullable final String gameName, @Nullable final String gameCompany, @NotNull final List<Genre> genreList) {
@@ -35,6 +43,10 @@ public class Game implements Serializable{
     @NotNull
     public String getGameId() {
         return gameId;
+    }
+
+    public void setGameId(@NotNull String gameId) {
+        this.gameId = gameId;
     }
 
     @Nullable

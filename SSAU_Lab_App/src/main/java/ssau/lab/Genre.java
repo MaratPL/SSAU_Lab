@@ -3,13 +3,15 @@ package ssau.lab;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 import java.util.UUID;
 
+@XmlType(propOrder = {"genreId","genreName",})
 public class Genre implements Serializable{
 
     @NotNull
-    private final String genreId = UUID.randomUUID().toString();
+    private String genreId = UUID.randomUUID().toString();
 
     @Nullable
     private String genreName = null;
@@ -24,6 +26,10 @@ public class Genre implements Serializable{
     @NotNull
     public String getGenreId() {
         return genreId;
+    }
+
+    public void setGenreId(@NotNull String genreId) {
+        this.genreId = genreId;
     }
 
     @Nullable

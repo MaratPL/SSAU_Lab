@@ -4,8 +4,12 @@ package ssau.protocol;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 
+@XmlRootElement(name = "protocol")
+@XmlType(propOrder = {"id","operationType", "objectType", "value"})
 public class Protocol implements Serializable {
 
     @Nullable
@@ -21,6 +25,8 @@ public class Protocol implements Serializable {
     private Object value;
 
     private boolean isError = false;
+
+    public Protocol(){}
 
     public Protocol(
             @Nullable final String id,

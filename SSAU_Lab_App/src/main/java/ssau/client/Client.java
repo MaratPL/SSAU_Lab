@@ -5,10 +5,12 @@ import org.jetbrains.annotations.Nullable;
 import ssau.controller.ModelController;
 import ssau.lab.Game;
 import ssau.lab.Genre;
+import ssau.parser.JAXBParser;
 import ssau.protocol.ObjectType;
 import ssau.protocol.OperationType;
 import ssau.protocol.Protocol;
 
+import javax.xml.bind.JAXBException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -44,55 +46,49 @@ public class Client {
             @NotNull final String gameName,
             @NotNull final String gameCompany,
             @NotNull final List<Genre> genrelist
-    ) throws IOException {
+    ) throws IOException, JAXBException {
         Game game = new Game(gameName, gameCompany, genrelist);
         Protocol protocol = new Protocol(id, OperationType.CREATE_ENTITY, ObjectType.GAME, game);
-        oos.writeObject(protocol);
-        oos.flush();
+        JAXBParser.writeObject(oos, protocol);
     }
 
     @NotNull
     public void addGenre(
             @NotNull final String genreName
-    ) throws IOException, ClassNotFoundException {
+    ) throws IOException, ClassNotFoundException, JAXBException {
         Genre genre = new Genre(genreName);
         Protocol protocol = new Protocol(id, OperationType.CREATE_ENTITY, ObjectType.GENRE, genre);
-        oos.writeObject(protocol);
-        oos.flush();
+        JAXBParser.writeObject(oos, protocol);
     }
 
     @Nullable
     public void getGameById(
             @NotNull final String gameId
-    ) throws IOException, ClassNotFoundException {
+    ) throws IOException, ClassNotFoundException, JAXBException {
         Protocol protocol = new Protocol(id, OperationType.GET_ENTITY, ObjectType.GAME, gameId);
-        oos.writeObject(protocol);
-        oos.flush();
+        JAXBParser.writeObject(oos, protocol);
     }
 
     @Nullable
     public Genre getGenreById(
             @NotNull final String genreId
-    ) throws IOException, ClassNotFoundException {
+    ) throws IOException, ClassNotFoundException, JAXBException {
         Protocol protocol = new Protocol(id, OperationType.GET_ENTITY, ObjectType.GENRE, genreId);
-        oos.writeObject(protocol);
-        oos.flush();
-        Genre result = (Genre) ois.readObject();
+        JAXBParser.writeObject(oos, protocol);
+        Genre result = (Genre) JAXBParser.readObject(ois, Protocol.class);
         return result;
     }
 
-    public void sendRequestForEditGame(@NotNull final String gameId) throws IOException {
+    public void sendRequestForEditGame(@NotNull final String gameId) throws IOException, JAXBException {
         Game game = modelController.getGameById(gameId);
         Protocol protocol = new Protocol(id, OperationType.BEGIN_EDITING_ENTITY, ObjectType.GAME, game);
-        oos.writeObject(protocol);
-        oos.flush();
+        JAXBParser.writeObject(oos, protocol);
     }
 
-    public void sendRequestForEditGenre(@NotNull final String gameId) throws IOException {
+    public void sendRequestForEditGenre(@NotNull final String gameId) throws IOException, JAXBException {
         Genre genre = modelController.getGenreById(gameId);
         Protocol protocol = new Protocol(id, OperationType.BEGIN_EDITING_ENTITY, ObjectType.GENRE, genre);
-        oos.writeObject(protocol);
-        oos.flush();
+        JAXBParser.writeObject(oos, protocol);
     }
 
     @Nullable
@@ -101,38 +97,35 @@ public class Client {
             @NotNull final String gameName,
             @NotNull final String gameCompany,
             @NotNull final List<Genre> genreList
-    ) throws IOException{
+    ) throws IOException, JAXBException {
         Game game = modelController.getGameById(gameId);
         game.setGameCompany(gameCompany);
         game.setGenreList(genreList);
         game.setGameName(gameName);
         Protocol protocol = new Protocol(id, OperationType.END_EDITING_ENTITY, ObjectType.GAME, game);
-        oos.writeObject(protocol);
-        oos.flush();
+        JAXBParser.writeObject(oos, protocol);
     }
 
     @Nullable
     public void updateGenre(
             @NotNull final String genreId,
             @NotNull final String genreName
-    ) throws IOException{
+    ) throws IOException, JAXBException {
         Genre genre = modelController.getGenreById(genreId);
         genre.setGenreName(genreName);
         Protocol protocol = new Protocol(id, OperationType.END_EDITING_ENTITY, ObjectType.GENRE, genre);
-        oos.writeObject(protocol);
-        oos.flush();
+        JAXBParser.writeObject(oos, protocol);
     }
 
     @Nullable
     public Game removeGameById(
             @NotNull final String gameId
-    ) throws IOException, ClassNotFoundException {
+    ) throws IOException, ClassNotFoundException, JAXBException {
         Game game = modelController.getGameById(gameId);
         if (game != null){
             Protocol protocol = new Protocol(id, OperationType.DELETE_ENTITY, ObjectType.GAME, game);
-            oos.writeObject(protocol);
-            oos.flush();
-            Protocol response = (Protocol)ois.readObject();
+            JAXBParser.writeObject(oos, protocol);
+            Protocol response = (Protocol)JAXBParser.readObject(ois, Protocol.class);
             if (!response.isError()){
                 return modelController.removeGameById(gameId);
             }
@@ -143,14 +136,13 @@ public class Client {
     @Nullable
     public Genre removeGenreById(
             @NotNull final String genreId
-    ) throws IOException, ClassNotFoundException {
+    ) throws IOException, ClassNotFoundException, JAXBException {
         Genre genre = modelController.getGenreById(genreId);
         if (genre != null){
             Protocol protocol = new Protocol(id, OperationType.DELETE_ENTITY, ObjectType.GENRE, genre);
-            oos.writeObject(protocol);
-            oos.flush();
+            JAXBParser.writeObject(oos, protocol);
             Protocol response =
-                    (Protocol)ois.readObject();
+                    (Protocol)JAXBParser.readObject(ois, Protocol.class);
             if (!response.isError()){
                 return modelController.removeGenreById(genreId);
             }
@@ -159,11 +151,10 @@ public class Client {
     }
 
     @NotNull
-    private List<Game> getAllGames() throws IOException, ClassNotFoundException {
+    private List<Game> getAllGames() throws IOException, ClassNotFoundException, JAXBException {
         Protocol protocol = new Protocol(id, OperationType.GET_LIST_ENTITY, ObjectType.GAME, null);
-        oos.writeObject(protocol);
-        oos.flush();
-        Protocol response = (Protocol)ois.readObject();
+        JAXBParser.writeObject(oos, protocol);
+        Protocol response = (Protocol)JAXBParser.readObject(ois, Protocol.class);
         if (!response.isError()){
 
         }
@@ -171,11 +162,10 @@ public class Client {
     }
 
     @NotNull
-    public List<Genre> getAllGenres() throws IOException, ClassNotFoundException {
+    public List<Genre> getAllGenres() throws IOException, ClassNotFoundException, JAXBException {
         Protocol protocol = new Protocol(id, OperationType.GET_LIST_ENTITY, ObjectType.GENRE, null);
-        oos.writeObject(protocol);
-        oos.flush();
-        Protocol response = (Protocol)ois.readObject();
+        JAXBParser.writeObject(oos, protocol);
+        Protocol response = (Protocol)JAXBParser.readObject(ois, Protocol.class);
         if (!response.isError()){
 
         }

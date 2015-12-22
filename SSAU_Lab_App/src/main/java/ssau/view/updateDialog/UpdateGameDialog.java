@@ -6,6 +6,7 @@ import ssau.lab.Genre;
 import ssau.view.UIHelper;
 
 import javax.swing.*;
+import javax.xml.bind.JAXBException;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
@@ -59,6 +60,8 @@ public class UpdateGameDialog extends AbstractDialog  {
             client.updateGame(oldGame.getGameId(), gameNameTextBox.getText(), gameCompanyTextBox.getText(), newGenres);
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, " ошибка обновления ", "ошибка обновления", JOptionPane.ERROR_MESSAGE);
+        } catch (JAXBException e) {
+            e.printStackTrace();
         }
         this.dispose();//закрытие диалогового окна
     }

@@ -3,13 +3,13 @@ package ssau.web.server;
 import org.jetbrains.annotations.NotNull;
 import ssau.lab.Game;
 import ssau.lab.Genre;
+import ssau.parser.JAXBParser;
 import ssau.protocol.ObjectType;
 import ssau.protocol.OperationType;
 import ssau.protocol.Protocol;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import javax.xml.bind.JAXBException;
+import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.ArrayList;
@@ -29,13 +29,13 @@ public class ClientThread extends Thread {
             final ObjectInputStream inputStream = new ObjectInputStream(this.socket.getInputStream());
             final ObjectOutputStream outputStream = new ObjectOutputStream(this.socket.getOutputStream());
 
-            protocol = (Protocol) inputStream.readObject();
+            protocol = (Protocol) JAXBParser.readObject(inputStream, Protocol.class);
             id = protocol.getId();
 
             if (protocol.getOperationType() == OperationType.SUBSCRIBE) {
                 Server.getUsers().addUser(id, socket, outputStream, inputStream);
             } else {
-                outputStream.writeObject(new Protocol(OperationType.ERROR, true));
+                JAXBParser.writeObject(outputStream, new Protocol(OperationType.ERROR, true));
                 inputStream.close();
                 outputStream.close();
                 return;
@@ -44,7 +44,7 @@ public class ClientThread extends Thread {
 
             while (true) {
 
-                protocol = (Protocol) inputStream.readObject();
+                protocol = (Protocol) JAXBParser.readObject(inputStream, Protocol.class);
 
                 if (protocol.getOperationType() != null) {
                     switch (protocol.getOperationType()) {
@@ -65,7 +65,7 @@ public class ClientThread extends Thread {
                             if (protocol.getObjectType() == ObjectType.GAME) {
                                 final Game game = (Game) protocol.getValue();
                                 if (Server.getEditableEntitySet().contains(game.getGameId())) {
-                                    outputStream.writeObject(new Protocol(OperationType.ERROR, true));
+                                    JAXBParser.writeObject(outputStream, new Protocol(OperationType.ERROR, true));
                                     break;
                                 }
                                 final Game result =
@@ -73,13 +73,13 @@ public class ClientThread extends Thread {
                                 if (result != null) {
                                     broadcast(Server.getUsers().getClientList(), new Protocol(id, OperationType.DELETE_ENTITY, ObjectType.GAME, result, false));
                                 } else {
-                                    outputStream.writeObject(new Protocol(OperationType.ERROR, true));
+                                    JAXBParser.writeObject(outputStream, new Protocol(OperationType.ERROR, true));
                                     break;
                                 }
                             } else {
                                 final Genre genre = (Genre) protocol.getValue();
                                 if (Server.getEditableEntitySet().contains(genre.getGenreId())) {
-                                    outputStream.writeObject(new Protocol(OperationType.ERROR, true));
+                                    JAXBParser.writeObject(outputStream, new Protocol(OperationType.ERROR, true));
                                     break;
                                 }
                                 final Genre result =
@@ -87,7 +87,7 @@ public class ClientThread extends Thread {
                                 if (result != null) {
                                     broadcast(Server.getUsers().getClientList(), new Protocol(id, OperationType.DELETE_ENTITY, ObjectType.GENRE, result, false));
                                 } else {
-                                    outputStream.writeObject(new Protocol(OperationType.ERROR, true));
+                                    JAXBParser.writeObject(outputStream, new Protocol(OperationType.ERROR, true));
                                     break;
                                 }
                             }
@@ -96,7 +96,7 @@ public class ClientThread extends Thread {
                             if (protocol.getObjectType() == ObjectType.GAME) {
                                 final Game game = (Game) protocol.getValue();
                                 if (Server.getEditableEntitySet().contains(game.getGameId())) {
-                                    outputStream.writeObject(new Protocol(OperationType.ERROR, true));
+                                    JAXBParser.writeObject(outputStream, new Protocol(OperationType.ERROR, true));
                                     break;
                                 }
                                 final Game result =
@@ -105,13 +105,13 @@ public class ClientThread extends Thread {
                                     Server.getEditableEntitySet().add(result.getGameId());
                                     broadcast(Server.getUsers().getClientList(), new Protocol(id, OperationType.BEGIN_EDITING_ENTITY, ObjectType.GAME, result, false));
                                 } else {
-                                    outputStream.writeObject(new Protocol(OperationType.ERROR, true));
+                                    JAXBParser.writeObject(outputStream, new Protocol(OperationType.ERROR, true));
                                     break;
                                 }
                             } else {
                                 final Genre genre = (Genre) protocol.getValue();
                                 if (Server.getEditableEntitySet().contains(genre.getGenreId())) {
-                                    outputStream.writeObject(new Protocol(OperationType.ERROR, true));
+                                    JAXBParser.writeObject(outputStream, new Protocol(OperationType.ERROR, true));
                                     System.out.println("не редактируй бро1");
                                     break;
                                 }
@@ -122,7 +122,7 @@ public class ClientThread extends Thread {
                                     broadcast(Server.getUsers().getClientList(), new Protocol(id, OperationType.BEGIN_EDITING_ENTITY, ObjectType.GENRE, result, false));
                                     System.out.println("редактируй бро");
                                 } else {
-                                    outputStream.writeObject(new Protocol(OperationType.ERROR, true));
+                                    JAXBParser.writeObject(outputStream, new Protocol(OperationType.ERROR, true));
                                     System.out.println("не редактируй бро2");
                                     break;
                                 }
@@ -132,7 +132,7 @@ public class ClientThread extends Thread {
                             if (protocol.getObjectType() == ObjectType.GAME) {
                                 final Game game = (Game) protocol.getValue();
                                 if (!Server.getEditableEntitySet().contains(game.getGameId())) {
-                                    outputStream.writeObject(new Protocol(OperationType.ERROR, true));
+                                    JAXBParser.writeObject(outputStream, new Protocol(OperationType.ERROR, true));
                                     break;
                                 }
                                 final Game result =
@@ -141,13 +141,13 @@ public class ClientThread extends Thread {
                                     Server.getEditableEntitySet().remove(result.getGameId());
                                     broadcast(Server.getUsers().getClientList(), new Protocol(id, OperationType.END_EDITING_ENTITY, ObjectType.GAME, result, false));
                                 } else {
-                                    outputStream.writeObject(new Protocol(OperationType.ERROR, true));
+                                    JAXBParser.writeObject(outputStream, new Protocol(OperationType.ERROR, true));
                                     break;
                                 }
                             } else {
                                 final Genre genre = (Genre) protocol.getValue();
                                 if (!Server.getEditableEntitySet().contains(genre.getGenreId())) {
-                                    outputStream.writeObject(new Protocol(OperationType.ERROR, true));
+                                    JAXBParser.writeObject(outputStream, new Protocol(OperationType.ERROR, true));
                                     break;
                                 }
                                 final Genre result =
@@ -156,7 +156,7 @@ public class ClientThread extends Thread {
                                     Server.getEditableEntitySet().remove(result.getGenreId());
                                     broadcast(Server.getUsers().getClientList(), new Protocol(id, OperationType.END_EDITING_ENTITY, ObjectType.GENRE, result, false));
                                 } else {
-                                    outputStream.writeObject(new Protocol(OperationType.ERROR, true));
+                                    JAXBParser.writeObject(outputStream, new Protocol(OperationType.ERROR, true));
                                     break;
                                 }
                             }
@@ -167,18 +167,18 @@ public class ClientThread extends Thread {
                                 final Game result =
                                         Server.getModel().getGameById(entityId);
                                 if (result != null) {
-                                    outputStream.writeObject(new Protocol(OperationType.GET_ENTITY, ObjectType.GAME, result, false));
+                                    JAXBParser.writeObject(outputStream, new Protocol(OperationType.GET_ENTITY, ObjectType.GAME, result, false));
                                 } else {
-                                    outputStream.writeObject(new Protocol(OperationType.ERROR, true));
+                                    JAXBParser.writeObject(outputStream, new Protocol(OperationType.ERROR, true));
                                     break;
                                 }
                             } else {
                                 final Genre result =
                                         Server.getModel().getGenreById(entityId);
                                 if (result != null) {
-                                    outputStream.writeObject(new Protocol(OperationType.GET_ENTITY, ObjectType.GENRE, result, false));
+                                    JAXBParser.writeObject(outputStream, new Protocol(OperationType.GET_ENTITY, ObjectType.GENRE, result, false));
                                 } else {
-                                    outputStream.writeObject(new Protocol(OperationType.ERROR, true));
+                                    JAXBParser.writeObject(outputStream, new Protocol(OperationType.ERROR, true));
                                     break;
                                 }
                             }
@@ -186,15 +186,15 @@ public class ClientThread extends Thread {
                         case GET_LIST_ENTITY:
                             if (protocol.getObjectType() == ObjectType.GAME_LIST) {
                                 final List<Game> result = new ArrayList<>(Server.getModel().getAllGames());
-                                outputStream.writeObject(new Protocol(OperationType.GET_LIST_ENTITY, ObjectType.GAME_LIST, result, false));
+                                JAXBParser.writeObject(outputStream, new Protocol(OperationType.GET_LIST_ENTITY, ObjectType.GAME_LIST, result, false));
                             } else {
                                 final List<Genre> result = new ArrayList<>(Server.getModel().getAllGenre());
-                                outputStream.writeObject(new Protocol(OperationType.GET_LIST_ENTITY, ObjectType.GENRE_LIST, result, false));
+                                JAXBParser.writeObject(outputStream, new Protocol(OperationType.GET_LIST_ENTITY, ObjectType.GENRE_LIST, result, false));
                             }
                             break;
                     }
                 } else {
-                    outputStream.writeObject(new Protocol(OperationType.ERROR, true));
+                    JAXBParser.writeObject(outputStream, new Protocol(OperationType.ERROR, true));
                     break;
                 }
 
@@ -211,7 +211,7 @@ public class ClientThread extends Thread {
             Server.getUsers().deleteUser(id);
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+        }  catch (JAXBException e) {
             e.printStackTrace();
         }
 
@@ -220,14 +220,11 @@ public class ClientThread extends Thread {
     private void broadcast(@NotNull final List<ServerClient> serverClientList, @NotNull final Protocol protocol) {
         try {
             for (final ServerClient serverClient : serverClientList) {
-                serverClient.getThisObjectOutputStream().writeObject(protocol);
+                JAXBParser.writeObject(serverClient.getThisObjectOutputStream(), protocol);
             }
-        } catch (SocketException e) {
+        }  catch (JAXBException e) {
             System.out.println("In broadcast: " + id + " disconnected!");
             Server.getUsers().deleteUser(id);
-
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 }
