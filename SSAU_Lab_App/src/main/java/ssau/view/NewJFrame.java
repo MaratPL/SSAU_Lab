@@ -1,8 +1,12 @@
 package ssau.view;
 
+import ssau.client.Client;
+import ssau.client.ServerResponseListner;
 import ssau.controller.ModelController;
 import ssau.lab.Game;
 import ssau.lab.Genre;
+import ssau.web.OperationType;
+import ssau.web.Protocol;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -14,21 +18,32 @@ import java.awt.event.MouseEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
+import java.util.*;
 import java.util.List;
-import java.util.Set;
 
 public class NewJFrame extends javax.swing.JFrame {
 
-    public NewJFrame() {
+    public NewJFrame(Client client, ObjectOutputStream oos, ObjectInputStream ois) {
+        this.client = client;
+        this.oos = oos;
+        this.ois = ois;
         initComponents();
     }
 
     public String gameName;
     public String gameData;
     public String genreName;
-    public ModelController controller;
+    private Client client;
+    private ObjectOutputStream oos;
+    private ObjectInputStream ois;
+
+    public Client getClient(){
+        return client;
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -129,7 +144,7 @@ public class NewJFrame extends javax.swing.JFrame {
                 int i = allGamesTable1.getSelectedRow();
                 if(i!=-1){
                     DefaultTableModel model = (DefaultTableModel) allGamesTable1.getModel();
-                    List<Genre> temp = controller.getGameById(model.getValueAt(i, 0).toString()).getGenreList();
+                    List<Genre> temp = client.getModel().getGameById(model.getValueAt(i, 0).toString()).getGenreList();
                     for (int j = 0; j < temp.size(); j++) {
                         gameGenresColumnComboBox.addItem(temp.get(j).getGenreName());
                     }
@@ -178,13 +193,13 @@ public class NewJFrame extends javax.swing.JFrame {
 //                    DefaultTableModel model = (DefaultTableModel) allGamesTable1.getModel();
 //                    String gameId = model.getValueAt(i, 0).toString();
 //                    List<Genre> allGenre = controller.getGameById(gameId).getGenreList();
-                    List<Genre> allGenre = controller.getAllGenres();
+                    List<Genre> allGenre = client.getModel().getAllGenres();
                     for(int j=0; j < allGenre.size(); j++){
                         gamePanelComboBox1.addItem(allGenre.get(j).getGenreId());
                     }
 
                 } else {
-                    List<Genre> allGenre = controller.getAllGenres();
+                    List<Genre> allGenre = client.getModel().getAllGenres();
                     for(int j=0; j < allGenre.size(); j++){
                         gamePanelComboBox1.addItem(allGenre.get(j).getGenreId());
                     }
@@ -442,11 +457,8 @@ public class NewJFrame extends javax.swing.JFrame {
         pack();
     }// </editor-fold>                        
 
-    public void addController(ModelController controller){
-        this.controller = controller;
-    }
 
-    //не кашерно работаем с COMBO BOX
+    //пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ COMBO BOX
     private void updateGameButton1MouseClicked(java.awt.event.MouseEvent evt) {
         int i = allGamesTable1.getSelectedRow();
         if(i>=0){
@@ -457,12 +469,15 @@ public class NewJFrame extends javax.swing.JFrame {
             String gameId = model.getValueAt(i,0).toString();
 
             final List<Genre> tempList = new ArrayList<Genre>();
-            tempList.add(controller.getAllGenres().get(gamePanelComboBox1.getSelectedIndex()));
-            controller.updateGame(gameId, gameName, gameData, tempList);
+            if (client.getModel().getAllGenres().isEmpty()) {
+                client.getModel().updateGame(gameId, gameName, gameData, new ArrayList<Genre>());
+            } else {
+                tempList.add(client.getModel().getAllGenres().get(gamePanelComboBox1.getSelectedIndex()));
+            }
 
             model.setRowCount(0);
 
-            List<Game> allGames = controller.getAllGames();
+            List<Game> allGames = client.getModel().getAllGames();
             for(final Game game:allGames) {
                 if (game.getGenreList().size() != 0) {
                     String genre = game.getGenreList().get(0).getGenreName();
@@ -481,11 +496,11 @@ public class NewJFrame extends javax.swing.JFrame {
         if(i>=0){
             DefaultTableModel model = (DefaultTableModel) allGamesTable1.getModel();
             String deletedGmaeId = model.getValueAt(i,0).toString();
-            controller.removeGameById(deletedGmaeId);
+            client.getModel().removeGameById(deletedGmaeId);
 
             model.setRowCount(0);
 
-            List<Game> allGames = controller.getAllGames();
+            List<Game> allGames = client.getModel().getAllGames();
             for(final Game game:allGames) {
                 if (game.getGenreList().size() != 0) {
                     String genre = game.getGenreList().get(0).getGenreName();
@@ -505,15 +520,15 @@ public class NewJFrame extends javax.swing.JFrame {
 
         List<Genre> tempList = new ArrayList<Genre>();
         if(gamePanelComboBox1.getSelectedItem() != null){
-            tempList.add(controller.getGenreById(gamePanelComboBox1.getSelectedItem().toString()));
+            tempList.add(client.getModel().getGenreById(gamePanelComboBox1.getSelectedItem().toString()));
         }
 
-        controller.addGame(gameName,gameData,tempList);
+        client.getModel().addGame(gameName,gameData,tempList);
 
         DefaultTableModel model = (DefaultTableModel) allGamesTable1.getModel();
         model.setRowCount(0);
 
-        List<Game> allGames = controller.getAllGames();
+        List<Game> allGames = client.getModel().getAllGames();
         for(final Game game:allGames) {
             if (game.getGenreList().size() != 0) {
                 String genre = game.getGenreList().get(0).getGenreName();
@@ -524,7 +539,7 @@ public class NewJFrame extends javax.swing.JFrame {
         }
     }
 
-    //ПОЧЕМУ нельзя апдейтить список игр у жанров??? (возможно это правильно)
+    //пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ??? (пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ)
 
     private void updateGenreButton1MouseClicked(java.awt.event.MouseEvent evt) {
         int i = allGenreTable1.getSelectedRow();
@@ -536,11 +551,11 @@ public class NewJFrame extends javax.swing.JFrame {
 
             List<Game> tempList = new ArrayList<Game>();
 
-            controller.updateGenre(genreId, genreName);
+            client.getModel().updateGenre(genreId, genreName);
 
             model.setRowCount(0);
 
-            List<Genre> allGenres = controller.getAllGenres();
+            List<Genre> allGenres = client.getModel().getAllGenres();
             for(final Genre genre:allGenres){
                 model.addRow(new String[]{genre.getGenreId(), genre.getGenreName()});
             }
@@ -555,11 +570,11 @@ public class NewJFrame extends javax.swing.JFrame {
         if(i>=0){
             DefaultTableModel model = (DefaultTableModel) allGenreTable1.getModel();
             String deletedGenreId = model.getValueAt(i,0).toString();
-            controller.removeGenreById(deletedGenreId);
+            client.getModel().removeGenreById(deletedGenreId);
 
             model.setRowCount(0);
 
-            List<Genre> allGenres = controller.getAllGenres();
+            List<Genre> allGenres = client.getModel().getAllGenres();
             for(final Genre genre:allGenres){
                 model.addRow(new String[]{genre.getGenreId(), genre.getGenreName()});
             }
@@ -570,15 +585,31 @@ public class NewJFrame extends javax.swing.JFrame {
 
     private void createGenreButton1MouseClicked(java.awt.event.MouseEvent evt) {
         genreName = genreNameTextField.getText();
-        controller.addGenre(genreName);
+        try {
+            client.addGenre(genreName);
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, " РѕС€РёР±РєР° РґРѕР±Р°РІР»РµРЅРёСЏ ", "РѕС€РёР±РєР°", JOptionPane.ERROR_MESSAGE);
+            return;
+        } catch (ClassNotFoundException e) {
+            JOptionPane.showMessageDialog(null, " РѕС€РёР±РєР° РґРѕР±Р°РІР»РµРЅРёСЏ ", "РѕС€РёР±РєР°", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        updateGenresTable();
 
+    }
+
+    public void updateGenresTable(){
         DefaultTableModel model = (DefaultTableModel) allGenreTable1.getModel();
         model.setRowCount(0);
 
-        List<Genre> allGenre = controller.getAllGenres();
+        List<Genre> allGenre = client.getModel().getAllGenres();
         for(final Genre genre:allGenre){
             model.addRow(new String[]{genre.getGenreId(), genre.getGenreName()});
         }
+    }
+
+    public void updateGamesTable(){
+
     }
 
     private void updateGenreButton1ActionPerformed(java.awt.event.ActionEvent evt) {
@@ -620,7 +651,7 @@ public class NewJFrame extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
+    public static void main(String args[]) throws IOException {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -645,11 +676,18 @@ public class NewJFrame extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new NewJFrame().setVisible(true);
-            }
-        });
+
+       final Socket socket = new Socket("localhost", 4444);
+       ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+       ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+       final Client client = new Client(oos, ois);
+       Protocol protocol = new Protocol(client.getId(), OperationType.SUBSCRIBE, null, null);
+       oos.writeObject(protocol);
+       oos.flush();
+       final NewJFrame frame = new NewJFrame(client, oos , ois);
+       frame.setVisible(true);
+       ServerResponseListner listner = new ServerResponseListner(socket, oos, ois, frame);
+       listner.start();
     }
 
     // Variables declaration - do not modify                     

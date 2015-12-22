@@ -75,7 +75,7 @@ public class Model extends AbstractModel implements Serializable{
     @NotNull
     public List<Game> getGenreGameList(@NotNull final String genreId) {
         final List<Game> resultList = new ArrayList<Game>();
-
+        final Genre genre = getGenreById(genreId);
         for(final Game game : getAllGames()) {
             if(game.getGenreList().contains(genre)){
                 resultList.add(game);

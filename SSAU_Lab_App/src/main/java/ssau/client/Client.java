@@ -22,29 +22,26 @@ import java.util.UUID;
  */
 public class Client {
     private String id = UUID.randomUUID().toString();
-    private Socket socket;
     private ModelController modelController = new ModelController();
     private ObjectOutputStream oos;
     private ObjectInputStream ois;
 
 
-    public Client (Socket socket){
-        this.socket = socket;
-        try {
-            oos = (ObjectOutputStream)socket.getOutputStream();
-            ois = (ObjectInputStream)socket.getInputStream();
-        } catch (IOException e) {
-            e.printStackTrace();
-//������� ���������� ���������
-        }
+    public Client (ObjectOutputStream oos, ObjectInputStream ois){
+            this.oos = oos;
+            this.ois = ois;
     }
 
     public ModelController getModel(){
         return modelController;
     }
 
+    public String getId(){
+        return id;
+    }
+
     @NotNull
-    private void addGame(
+    public void addGame(
             @NotNull final String gameName,
             @NotNull final String gameCompany,
             @NotNull final List<Genre> genrelist
@@ -55,27 +52,26 @@ public class Client {
     }
 
     @NotNull
-    private void addGenre(
+    public void addGenre(
             @NotNull final String genreName
-    ) throws IOException {
-        Protocol protocol = new Protocol(id, OperationType.CREATE_ENTITY, ObjectType.GENRE, modelController.addGenre(genreName));
+    ) throws IOException, ClassNotFoundException {
+        Genre genre = new Genre(genreName);
+        Protocol protocol = new Protocol(id, OperationType.CREATE_ENTITY, ObjectType.GENRE, genre);
         oos.writeObject(protocol);
         oos.flush();
     }
 
     @Nullable
-    private Game getGameById(
+    public void getGameById(
             @NotNull final String gameId
     ) throws IOException, ClassNotFoundException {
         Protocol protocol = new Protocol(id, OperationType.GET_ENTITY, ObjectType.GAME, gameId);
         oos.writeObject(protocol);
         oos.flush();
-        Game result = (Game) ois.readObject();
-        return result;
     }
 
     @Nullable
-    private Genre getGenreById(
+    public Genre getGenreById(
             @NotNull final String genreId
     ) throws IOException, ClassNotFoundException {
         Protocol protocol = new Protocol(id, OperationType.GET_ENTITY, ObjectType.GENRE, genreId);
@@ -86,7 +82,7 @@ public class Client {
     }
 
     @Nullable
-    private Game updateGame(
+    public Game updateGame(
             @NotNull final String gameId,
             @NotNull final String gameName,
             @NotNull final String gameCompany,
@@ -112,7 +108,7 @@ public class Client {
     }
 
     @Nullable
-    private Game removeGameById(
+    public Game removeGameById(
             @NotNull final String gameId
     ) throws IOException, ClassNotFoundException {
         Game game = modelController.getGameById(gameId);
@@ -129,7 +125,7 @@ public class Client {
     }
 
     @Nullable
-    private Genre removeGenreById(
+    public Genre removeGenreById(
             @NotNull final String genreId
     ) throws IOException, ClassNotFoundException {
         Genre genre = modelController.getGenreById(genreId);
@@ -159,7 +155,7 @@ public class Client {
     }
 
     @NotNull
-    private List<Genre> getAllGenres() throws IOException, ClassNotFoundException {
+    public List<Genre> getAllGenres() throws IOException, ClassNotFoundException {
         Protocol protocol = new Protocol(id, OperationType.GET_LIST_ENTITY, ObjectType.GENRE, null);
         oos.writeObject(protocol);
         oos.flush();

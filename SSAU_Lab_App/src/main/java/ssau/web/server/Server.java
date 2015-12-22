@@ -24,7 +24,7 @@ public class Server {
 
     public static void main(String[] args) {
         try {
-            //Создаем слушатель
+            //пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             ServerSocket socketListener = new ServerSocket(4444);
             System.out.println("Start server...");
 
@@ -33,7 +33,7 @@ public class Server {
                 while (client == null) {
                     client = socketListener.accept();
                 }
-                (new ClientThread(client)).start(); //Создаем новый поток, которому передаем сокет
+                (new ClientThread(client)).start(); //пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
             }
         } catch (SocketException e) {
             System.err.println("Socket exception");

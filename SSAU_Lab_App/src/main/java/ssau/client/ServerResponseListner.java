@@ -15,8 +15,8 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 /**
- * Created by kolesnikov on 21.12.15.
- */
+* Created by kolesnikov on 21.12.15.
+*/
 public class ServerResponseListner extends Thread {
 
     private Socket socket;
@@ -24,11 +24,11 @@ public class ServerResponseListner extends Thread {
     private ObjectInputStream objectInputStream;
     private NewJFrame frame;
 
-    public ServerResponseListner(Socket socket, NewJFrame frame) throws IOException {
-        this.socket = socket;
+    public ServerResponseListner(Socket socket, ObjectOutputStream objectOutputStream, ObjectInputStream objectInputStream, NewJFrame frame){
         this.frame = frame;
-        this.objectInputStream = (ObjectInputStream)socket.getInputStream();
-        this.objectOutputStream = (ObjectOutputStream) socket.getOutputStream();
+        this.socket = socket;
+        this.objectInputStream = objectInputStream;
+        this.objectOutputStream = objectOutputStream;
     }
 
     @Override
@@ -46,6 +46,7 @@ public class ServerResponseListner extends Thread {
                             } else {
                                 final Genre genre = (Genre) protocol.getValue();
                                 frame.getClient().getModel().addGenre(genre.getGenreName());
+                                frame.updateGenresTable();
                             }
                             break;
                         case DELETE_ENTITY:
