@@ -4,10 +4,10 @@ import org.jetbrains.annotations.NotNull;
 
 public enum ObjectType {
 
-    GAME("Игра"),
-    GENRE("Жанр"),
-    GAME_LIST("Сиисок игр"),
-    GENRE_LIST("Список жанров");
+    GAME(),
+    GENRE(),
+    GAME_LIST(),
+    GENRE_LIST();
 
     @NotNull
     private String name = "";

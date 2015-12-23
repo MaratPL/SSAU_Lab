@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/SSAU_Lab_App/SSAU_Lab_App.iml" filepath="$PROJECT_DIR$/SSAU_Lab_App/SSAU_Lab_App.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SSAU_Lab_App/lab-app.iml" filepath="$PROJECT_DIR$/SSAU_Lab_App/lab-app.iml" />
     </modules>
   </component>
 </project>

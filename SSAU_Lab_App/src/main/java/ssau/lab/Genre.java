@@ -7,7 +7,6 @@ import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 import java.util.UUID;
 
-@XmlType(propOrder = {"genreId","genreName"})
 public class Genre implements Serializable{
 
     @NotNull

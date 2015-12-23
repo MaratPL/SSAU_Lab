@@ -11,9 +11,6 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 
-@XmlRootElement(name = "protocol")
-@XmlType(propOrder = {"id","operationType", "objectType", "value"})
-@XmlSeeAlso({Genre.class, Game.class})
 public class Protocol implements Serializable {
 
     @Nullable

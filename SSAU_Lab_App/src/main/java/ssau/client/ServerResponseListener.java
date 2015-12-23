@@ -1,36 +1,38 @@
 package ssau.client;
 
+import com.thoughtworks.xstream.XStream;
 import ssau.lab.Game;
 import ssau.lab.Genre;
-import ssau.parser.JAXBParser;
 import ssau.protocol.ObjectType;
 import ssau.protocol.Protocol;
 import ssau.view.NewJFrame;
 
-import javax.xml.bind.JAXBException;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
-public class ServerResponseListner extends Thread {
+public class ServerResponseListener extends Thread {
 
     private Socket socket;
-    private ObjectOutputStream objectOutputStream;
-    private ObjectInputStream objectInputStream;
     private NewJFrame frame;
+    private ObjectInputStream inputStream;
+    private ObjectOutputStream outputStream;
+    private XStream xStream = new XStream();
 
-    public ServerResponseListner(Socket socket, ObjectOutputStream objectOutputStream, ObjectInputStream objectInputStream, NewJFrame frame){
+    public ServerResponseListener(Socket socket, ObjectOutputStream objectOutputStream, ObjectInputStream objectInputStream, NewJFrame frame){
         this.frame = frame;
         this.socket = socket;
-        this.objectInputStream = objectInputStream;
-        this.objectOutputStream = objectOutputStream;
+        inputStream = objectInputStream;
+        outputStream = objectOutputStream;
+
     }
 
     @Override
     public void run(){
         while (socket.isConnected()){
             try {
-                Object object = JAXBParser.readObject(objectInputStream, Protocol.class);
+                Object object = xStream.fromXML((String) inputStream.readObject());
                 if (object != null){
                     Protocol protocol = (Protocol) object;
                     switch (protocol.getOperationType()){
@@ -86,8 +88,11 @@ public class ServerResponseListner extends Thread {
                             break;
                     }
                 }
-            }  catch (JAXBException e) {
+            } catch (ClassNotFoundException e) {
                 e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
             }
         }
     }

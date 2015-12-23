@@ -1,10 +1,11 @@
 package ssau.view;
 
+import com.thoughtworks.xstream.XStream;
 import ssau.client.Client;
-import ssau.client.ServerResponseListner;
+import ssau.client.ServerResponseListener;
 import ssau.lab.Game;
 import ssau.lab.Genre;
-import ssau.parser.JAXBParser;
+import ssau.protocol.ObjectType;
 import ssau.view.updateDialog.UpdateGameDialog;
 import ssau.view.updateDialog.UpdateGenreDialog;
 import ssau.protocol.OperationType;
@@ -20,6 +21,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import java.beans.XMLEncoder;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -703,12 +705,13 @@ public class NewJFrame extends javax.swing.JFrame {
        ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
        final Client client = new Client(oos, ois);
        Protocol protocol = new Protocol(client.getId(), OperationType.SUBSCRIBE, null, null);
-       JAXBParser.writeObject(oos, protocol);
+        XStream xs = new XStream();
+       oos.writeObject(xs.toXML(protocol));
        oos.flush();
        final NewJFrame frame = new NewJFrame(client, oos , ois);
        frame.setVisible(true);
-       ServerResponseListner listner = new ServerResponseListner(socket, oos, ois, frame);
-       listner.start();
+       ServerResponseListener listener = new ServerResponseListener(socket, oos, ois, frame);
+       listener.start();
     }
 
     // Variables declaration - do not modify                     

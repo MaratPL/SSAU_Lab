@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.UUID;
 
 
-@XmlType(propOrder = {"gameId","gameName", "gameCompany","genreList"})
 public class Game implements Serializable{
 
     @NotNull
@@ -69,8 +68,6 @@ public class Game implements Serializable{
         return genreList;
     }
 
-    @XmlElement(name = "genre")
-    @XmlElementWrapper
     public void setGenreList(@NotNull final List<Genre> genreList) {
         this.genreList = genreList;
     }
