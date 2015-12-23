@@ -7,9 +7,7 @@ import ssau.protocol.ObjectType;
 import ssau.protocol.Protocol;
 import ssau.view.NewJFrame;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.Socket;
 
 public class ServerResponseListener extends Thread {
@@ -86,6 +84,11 @@ public class ServerResponseListener extends Thread {
                                 frame.updateGenresTable();
                             }
                             break;
+                        case SAVE_MODEL:
+                            FileWriter fileWriter = new FileWriter("model.xml");
+                            fileWriter.write((String) protocol.getValue());
+                            fileWriter.flush();
+                            fileWriter.close();
                     }
                 }
             } catch (ClassNotFoundException e) {

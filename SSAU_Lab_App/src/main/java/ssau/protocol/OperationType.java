@@ -12,7 +12,8 @@ public enum OperationType {
     BEGIN_EDITING_ENTITY("������ �������������� ��������"),
     END_EDITING_ENTITY("��������� �������������� ��������"),
     UNSUBSCRIBE("����������"),
-    ERROR("��������� ������");
+    ERROR("��������� ������"),
+    SAVE_MODEL("Сохранить все данные в XML");
 
     @NotNull
     private String name = "";

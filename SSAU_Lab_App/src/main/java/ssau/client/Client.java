@@ -187,4 +187,10 @@ public class Client {
         }
         return new ArrayList<Genre>(modelController.getAllGenres());
     }
+
+    public void saveModel() throws IOException {
+        Protocol protocol = new Protocol(id, OperationType.SAVE_MODEL, null, null);
+        outputStream.writeObject(xStream.toXML(protocol));
+        outputStream.flush();
+    }
 }

@@ -426,7 +426,11 @@ public class NewJFrame extends javax.swing.JFrame {
         saveKey.setText("Save");
         saveKey.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                saveKeyMouseClicked(evt);
+                try {
+                    saveKeyMouseClicked(evt);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -659,8 +663,8 @@ public class NewJFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
     }
 
-    private void saveKeyMouseClicked(java.awt.event.MouseEvent evt) {
-        // TODO add your handling code here:
+    private void saveKeyMouseClicked(java.awt.event.MouseEvent evt) throws IOException {
+        client.saveModel();
     }
 
     private void loadKeyMouseClicked(java.awt.event.MouseEvent evt) {

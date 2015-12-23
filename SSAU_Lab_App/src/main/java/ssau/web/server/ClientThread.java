@@ -210,6 +210,10 @@ public class ClientThread extends Thread {
                                 outputStream.flush();
                             }
                             break;
+                        case SAVE_MODEL:
+                            outputStream.writeObject(xStream.toXML(new Protocol(OperationType.SAVE_MODEL, null, xStream.toXML(Server.getModel()), false)));
+                            outputStream.flush();
+                            break;
                     }
                 } else {
                     outputStream.writeObject(xStream.toXML(new Protocol(OperationType.ERROR, true)));
