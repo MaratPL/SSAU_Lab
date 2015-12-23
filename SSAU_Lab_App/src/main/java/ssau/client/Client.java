@@ -138,10 +138,6 @@ public class Client {
             Protocol protocol = new Protocol(id, OperationType.DELETE_ENTITY, ObjectType.GAME, game);
             outputStream.writeObject(xStream.toXML(protocol));
             outputStream.flush();
-            Protocol response = (Protocol)xStream.fromXML((String) inputStream.readObject());
-            if (!response.isError()){
-                return modelController.removeGameById(gameId);
-            }
         }
         return null;
     }
@@ -155,11 +151,6 @@ public class Client {
             Protocol protocol = new Protocol(id, OperationType.DELETE_ENTITY, ObjectType.GENRE, genre);
             outputStream.writeObject(xStream.toXML(protocol));
             outputStream.flush();
-            Protocol response =
-                    (Protocol) xStream.fromXML((String) inputStream.readObject());
-            if (!response.isError()){
-                return modelController.removeGenreById(genreId);
-            }
         }
         return null;
     }

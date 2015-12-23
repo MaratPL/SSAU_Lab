@@ -50,11 +50,13 @@ public class ServerResponseListener extends Thread {
                                 final Game game = (Game) protocol.getValue();
                                 if (frame.getClient().getModel().getGameById(game.getGameId()) != null){
                                     frame.getClient().getModel().removeGameById(game.getGameId());
+                                    frame.updateGamesTable();
                                 }
                             } else {
                                 final Genre genre = (Genre) protocol.getValue();
                                 if (frame.getClient().getModel().getGenreById(genre.getGenreId()) != null){
                                     frame.getClient().getModel().removeGenreById(genre.getGenreId());
+                                    frame.updateGenresTable();
                                 }
                             }
                             break;

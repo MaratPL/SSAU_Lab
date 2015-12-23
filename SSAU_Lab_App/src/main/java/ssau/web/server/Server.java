@@ -3,11 +3,13 @@ package ssau.web.server;
 
 import org.jetbrains.annotations.NotNull;
 import ssau.lab.Model;
+import ssau.web.db.DataBase;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,26 +22,31 @@ public class Server {
     private final static Model model = new Model();
 
     @NotNull
+    private static DataBase dataBase;
+
+    @NotNull
     private final static Set<String> editableEntitySet = new HashSet<>();
 
     public static void main(String[] args) {
         try {
-            //������� ���������
             ServerSocket socketListener = new ServerSocket(4444);
             System.out.println("Start server...");
+            dataBase =  new DataBase();
 
             while (true) {
                 Socket client = null;
                 while (client == null) {
                     client = socketListener.accept();
                 }
-                (new ClientThread(client)).start(); //������� ����� �����, �������� �������� �����
+                (new ClientThread(client, dataBase)).start();
             }
         } catch (SocketException e) {
             System.err.println("Socket exception");
             e.printStackTrace();
         } catch (IOException e) {
             System.err.println("I/O exception");
+            e.printStackTrace();
+        } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
     }

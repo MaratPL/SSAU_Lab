@@ -7,6 +7,7 @@ import ssau.lab.Genre;
 import ssau.protocol.ObjectType;
 import ssau.protocol.OperationType;
 import ssau.protocol.Protocol;
+import ssau.web.db.DataBase;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -20,9 +21,11 @@ public class ClientThread extends Thread {
     private Socket socket;
     private Protocol protocol;
     private String id;
+    private DataBase dataBase;
 
-    public ClientThread(Socket socket) {
+    public ClientThread(@NotNull final Socket socket, @NotNull final DataBase dataBase) {
         this.socket = socket;
+        this.dataBase = dataBase;
     }
 
     public void run() {
@@ -54,13 +57,23 @@ public class ClientThread extends Thread {
                         case CREATE_ENTITY:
                             if (protocol.getObjectType() == ObjectType.GAME) {
                                 final Game game = (Game) protocol.getValue();
-                                final Game result =
-                                        Server.getModel().createGame(game.getGameName(), game.getGameCompany(), game.getGenreList());
+                                final Game result = dataBase.createGame(game);
+                                if(result == null){
+                                    outputStream.writeObject(xStream.toXML(new Protocol(OperationType.ERROR, true)));
+                                    outputStream.flush();
+                                    break;
+                                }
+                                Server.getModel().addGame(result);
                                 broadcast(Server.getUsers().getClientList(), new Protocol(id, OperationType.CREATE_ENTITY, ObjectType.GAME, result, false));
                             } else {
                                 final Genre genre = (Genre) protocol.getValue();
-                                final Genre result =
-                                        Server.getModel().createGenre(genre.getGenreName());
+                                final Genre result = dataBase.createGenre(genre);
+                                if(result == null){
+                                    outputStream.writeObject(xStream.toXML(new Protocol(OperationType.ERROR, true)));
+                                    outputStream.flush();
+                                    break;
+                                }
+                                Server.getModel().addGanre(result);
                                 broadcast(Server.getUsers().getClientList(), new Protocol(id, OperationType.CREATE_ENTITY, ObjectType.GENRE, result, false));
                             }
                             break;
@@ -72,9 +85,10 @@ public class ClientThread extends Thread {
                                     outputStream.flush();
                                     break;
                                 }
-                                final Game result =
-                                        Server.getModel().removeGameById(game.getGameId());
+                                final Game result = dataBase.deleteGame(game);
+
                                 if (result != null) {
+                                    Server.getModel().removeGameById(game.getGameId());
                                     broadcast(Server.getUsers().getClientList(), new Protocol(id, OperationType.DELETE_ENTITY, ObjectType.GAME, result, false));
                                 } else {
                                     outputStream.writeObject(xStream.toXML(new Protocol(OperationType.ERROR, true)));
@@ -88,9 +102,10 @@ public class ClientThread extends Thread {
                                     outputStream.flush();
                                     break;
                                 }
-                                final Genre result =
-                                        Server.getModel().removeGenreById(genre.getGenreId());
+                                final Genre result =  dataBase.deleteGenre(genre);
+
                                 if (result != null) {
+                                    Server.getModel().removeGenreById(genre.getGenreId());
                                     broadcast(Server.getUsers().getClientList(), new Protocol(id, OperationType.DELETE_ENTITY, ObjectType.GENRE, result, false));
                                 } else {
                                     outputStream.writeObject(xStream.toXML(new Protocol(OperationType.ERROR, true)));
@@ -107,15 +122,23 @@ public class ClientThread extends Thread {
                                     outputStream.flush();
                                     break;
                                 }
-                                final Game result =
+                                Game result =
                                         Server.getModel().getGameById(game.getGameId());
+
                                 if (result != null) {
                                     Server.getEditableEntitySet().add(result.getGameId());
                                     broadcast(Server.getUsers().getClientList(), new Protocol(id, OperationType.BEGIN_EDITING_ENTITY, ObjectType.GAME, result, false));
                                 } else {
-                                    outputStream.writeObject(xStream.toXML(new Protocol(OperationType.ERROR, true)));
-                                    outputStream.flush();
-                                    break;
+                                    result = dataBase.getGameById(game.getGameId());
+                                    if (result != null) {
+                                        Server.getModel().addGame(result);
+                                        Server.getEditableEntitySet().add(result.getGameId());
+                                        broadcast(Server.getUsers().getClientList(), new Protocol(id, OperationType.BEGIN_EDITING_ENTITY, ObjectType.GAME, result, false));
+                                    } else {
+                                        outputStream.writeObject(xStream.toXML(new Protocol(OperationType.ERROR, true)));
+                                        outputStream.flush();
+                                        break;
+                                    }
                                 }
                             } else {
                                 final Genre genre = (Genre) protocol.getValue();
@@ -124,15 +147,22 @@ public class ClientThread extends Thread {
                                     outputStream.flush();
                                     break;
                                 }
-                                final Genre result =
+                                Genre result =
                                         Server.getModel().getGenreById(genre.getGenreId());
                                 if (result != null) {
                                     Server.getEditableEntitySet().add(result.getGenreId());
                                     broadcast(Server.getUsers().getClientList(), new Protocol(id, OperationType.BEGIN_EDITING_ENTITY, ObjectType.GENRE, result, false));
                                 } else {
-                                    outputStream.writeObject(xStream.toXML(new Protocol(OperationType.ERROR, true)));
-                                    outputStream.flush();
-                                    break;
+                                    result = dataBase.getGenreById(genre.getGenreId());
+                                    if (result != null) {
+                                        Server.getModel().addGanre(result);
+                                        Server.getEditableEntitySet().add(result.getGenreId());
+                                        broadcast(Server.getUsers().getClientList(), new Protocol(id, OperationType.BEGIN_EDITING_ENTITY, ObjectType.GENRE, result, false));
+                                    } else {
+                                        outputStream.writeObject(xStream.toXML(new Protocol(OperationType.ERROR, true)));
+                                        outputStream.flush();
+                                        break;
+                                    }
                                 }
                             }
                             break;
@@ -144,9 +174,10 @@ public class ClientThread extends Thread {
                                     outputStream.flush();
                                     break;
                                 }
-                                final Game result =
-                                        Server.getModel().updateGame(game.getGameId(), game.getGameName(), game.getGameCompany(), game.getGenreList());
+                                final Game result =  dataBase.updateGame(game);
+
                                 if (result != null) {
+                                    Server.getModel().updateGame(result.getGameId(), result.getGameName(), result.getGameCompany(), result.getGenreList());
                                     Server.getEditableEntitySet().remove(result.getGameId());
                                     broadcast(Server.getUsers().getClientList(), new Protocol(id, OperationType.END_EDITING_ENTITY, ObjectType.GAME, result, false));
                                 } else {
@@ -161,9 +192,10 @@ public class ClientThread extends Thread {
                                     outputStream.flush();
                                     break;
                                 }
-                                final Genre result =
-                                        Server.getModel().updateGenre(genre.getGenreId(), genre.getGenreName());
+                                final Genre result = dataBase.updateGenre(genre);
+
                                 if (result != null) {
+                                    Server.getModel().updateGenre(result.getGenreId(), result.getGenreName());
                                     Server.getEditableEntitySet().remove(result.getGenreId());
                                     broadcast(Server.getUsers().getClientList(), new Protocol(id, OperationType.END_EDITING_ENTITY, ObjectType.GENRE, result, false));
                                 } else {
@@ -176,36 +208,48 @@ public class ClientThread extends Thread {
                         case GET_ENTITY:
                             final String entityId = (String) protocol.getValue();
                             if (protocol.getObjectType() == ObjectType.GAME) {
-                                final Game result =
+                                Game result =
                                         Server.getModel().getGameById(entityId);
                                 if (result != null) {
                                     outputStream.writeObject(xStream.toXML(new Protocol(OperationType.GET_ENTITY, ObjectType.GAME, result, false)));
                                     outputStream.flush();
                                 } else {
-                                    outputStream.writeObject(xStream.toXML(new Protocol(OperationType.ERROR, true)));
-                                    outputStream.flush();
-                                    break;
+                                    result = dataBase.getGameById(entityId);
+                                    if (result != null) {
+                                        outputStream.writeObject(xStream.toXML(new Protocol(OperationType.GET_ENTITY, ObjectType.GAME, result, false)));
+                                        outputStream.flush();
+                                    } else {
+                                        outputStream.writeObject(xStream.toXML(new Protocol(OperationType.ERROR, true)));
+                                        outputStream.flush();
+                                        break;
+                                    }
                                 }
                             } else {
-                                final Genre result =
+                                Genre result =
                                         Server.getModel().getGenreById(entityId);
                                 if (result != null) {
                                     outputStream.writeObject(xStream.toXML(new Protocol(OperationType.GET_ENTITY, ObjectType.GENRE, result, false)));
                                     outputStream.flush();
                                    } else {
-                                    outputStream.writeObject(xStream.toXML(new Protocol(OperationType.ERROR, true)));
-                                    outputStream.flush();
-                                    break;
+                                    result = dataBase.getGenreById(entityId);
+                                    if(result != null) {
+                                        outputStream.writeObject(xStream.toXML(new Protocol(OperationType.GET_ENTITY, ObjectType.GENRE, result, false)));
+                                        outputStream.flush();
+                                    }  else {
+                                        outputStream.writeObject(xStream.toXML(new Protocol(OperationType.ERROR, true)));
+                                        outputStream.flush();
+                                        break;
+                                    }
                                 }
                             }
                             break;
                         case GET_LIST_ENTITY:
                             if (protocol.getObjectType() == ObjectType.GAME_LIST) {
-                                final List<Game> result = new ArrayList<>(Server.getModel().getAllGames());
+                                final List<Game> result = new ArrayList<>(dataBase.getAllGames());
                                 outputStream.writeObject(xStream.toXML(new Protocol(OperationType.GET_LIST_ENTITY, ObjectType.GAME_LIST, result, false)));
                                 outputStream.flush();
                             } else {
-                                final List<Genre> result = new ArrayList<>(Server.getModel().getAllGenre());
+                                final List<Genre> result = new ArrayList<>(dataBase.getAllGenres());
                                 outputStream.writeObject(xStream.toXML(new Protocol(OperationType.GET_LIST_ENTITY, ObjectType.GENRE_LIST, result, false)));
                                 outputStream.flush();
                             }

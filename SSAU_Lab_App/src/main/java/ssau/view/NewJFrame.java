@@ -5,29 +5,27 @@ import ssau.client.Client;
 import ssau.client.ServerResponseListener;
 import ssau.lab.Game;
 import ssau.lab.Genre;
-import ssau.protocol.ObjectType;
-import ssau.view.updateDialog.UpdateGameDialog;
-import ssau.view.updateDialog.UpdateGenreDialog;
 import ssau.protocol.OperationType;
 import ssau.protocol.Protocol;
+import ssau.view.updateDialog.UpdateGameDialog;
+import ssau.view.updateDialog.UpdateGenreDialog;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.xml.bind.JAXBException;
-
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import java.beans.XMLEncoder;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class NewJFrame extends javax.swing.JFrame {
 
@@ -218,7 +216,15 @@ public class NewJFrame extends javax.swing.JFrame {
         deleteGameButton1.setText("Delete Game");
         deleteGameButton1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                deleteGameMouseClicked(evt);
+                try {
+                    deleteGameMouseClicked(evt);
+                } catch (JAXBException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -351,7 +357,15 @@ public class NewJFrame extends javax.swing.JFrame {
         deleteGenreButton1.setText("Delete Genre");
         deleteGenreButton1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                deleteGenreButton1MouseClicked(evt);
+                try {
+                    deleteGenreButton1MouseClicked(evt);
+                } catch (JAXBException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -501,12 +515,12 @@ public class NewJFrame extends javax.swing.JFrame {
         dialog.setVisible(true);
     }
 
-    private void deleteGameMouseClicked(java.awt.event.MouseEvent evt) {
+    private void deleteGameMouseClicked(java.awt.event.MouseEvent evt) throws JAXBException, IOException, ClassNotFoundException {
         int i = allGamesTable1.getSelectedRow();
         if(i>=0){
             DefaultTableModel model = (DefaultTableModel) allGamesTable1.getModel();
-            String deletedGmaeId = model.getValueAt(i,0).toString();
-            client.getModel().removeGameById(deletedGmaeId);
+            String deletedGameId = model.getValueAt(i,0).toString();
+            client.removeGameById(deletedGameId);
 
             model.setRowCount(0);
 
@@ -579,12 +593,12 @@ public class NewJFrame extends javax.swing.JFrame {
     }
 
 
-    private void deleteGenreButton1MouseClicked(java.awt.event.MouseEvent evt) {
+    private void deleteGenreButton1MouseClicked(java.awt.event.MouseEvent evt) throws JAXBException, IOException, ClassNotFoundException {
         int i = allGenreTable1.getSelectedRow();
         if(i>=0){
             DefaultTableModel model = (DefaultTableModel) allGenreTable1.getModel();
             String deletedGenreId = model.getValueAt(i,0).toString();
-            client.getModel().removeGenreById(deletedGenreId);
+            client.removeGenreById(deletedGenreId);
 
             model.setRowCount(0);
 

@@ -3,9 +3,6 @@ package ssau.lab;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +31,12 @@ public class Game implements Serializable{
         this.gameName = gameName;
         this.gameCompany = gameCompany;
         this.genreList = genreList;
+    }
+
+    public Game(@Nullable final String id, @Nullable final String gameName, @Nullable final String gameCompany) {
+        this.gameId = id;
+        this.gameName = gameName;
+        this.gameCompany = gameCompany;
     }
 
     @NotNull

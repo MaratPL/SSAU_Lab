@@ -3,7 +3,6 @@ package ssau.lab;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 import java.util.UUID;
 
@@ -16,6 +15,11 @@ public class Genre implements Serializable{
     private String genreName = null;
 
     public Genre() {
+    }
+
+    public Genre(@Nullable final String id, @Nullable final String name) {
+        genreId = id;
+        genreName = name;
     }
 
     public Genre(@Nullable final String name) {
