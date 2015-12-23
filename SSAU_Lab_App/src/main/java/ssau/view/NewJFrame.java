@@ -4,6 +4,7 @@ import ssau.client.Client;
 import ssau.client.ServerResponseListner;
 import ssau.lab.Game;
 import ssau.lab.Genre;
+import ssau.parser.JAXBParser;
 import ssau.view.updateDialog.UpdateGameDialog;
 import ssau.view.updateDialog.UpdateGenreDialog;
 import ssau.protocol.OperationType;
@@ -671,7 +672,7 @@ public class NewJFrame extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) throws IOException {
+    public static void main(String args[]) throws IOException, JAXBException {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -702,7 +703,7 @@ public class NewJFrame extends javax.swing.JFrame {
        ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
        final Client client = new Client(oos, ois);
        Protocol protocol = new Protocol(client.getId(), OperationType.SUBSCRIBE, null, null);
-       oos.writeObject(protocol);
+       JAXBParser.writeObject(oos, protocol);
        oos.flush();
        final NewJFrame frame = new NewJFrame(client, oos , ois);
        frame.setVisible(true);
