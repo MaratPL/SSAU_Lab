@@ -4,6 +4,7 @@ package ssau.web.server;
 import com.thoughtworks.xstream.XStream;
 import org.jetbrains.annotations.NotNull;
 import ssau.lab.Model;
+import ssau.web.db.DataBase;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -12,6 +13,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Set;
@@ -31,6 +33,8 @@ public class Server {
 
     private static final ExecutorService pool = Executors.newCachedThreadPool();
 
+    private static DataBase dataBase;
+
 
 
     @NotNull
@@ -40,9 +44,10 @@ public class Server {
         try {
             ServerSocket socketListener = new ServerSocket(4444);
             System.out.println("Start server...");
-            stream.fromXML(new FileInputStream("server-model.xml"), model);
 
-            pool.submit(new ServerThread(socketListener));
+            dataBase = new DataBase();
+
+            pool.submit(new ServerThread(socketListener, dataBase));
 
             Scanner sc = new Scanner(System.in);
             String stop = null;
@@ -60,14 +65,10 @@ public class Server {
         } catch (IOException e) {
             System.err.println("I/O exception");
             e.printStackTrace();
-        } finally {
-            try {
-                stream.toXML(model, new FileOutputStream("server-model.xml"));
-
-            }  catch (IOException e) {
-                e.printStackTrace();
-            }
-
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
