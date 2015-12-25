@@ -28,13 +28,7 @@ public class Server {
     @NotNull
     private static Model model = new Model();
 
-    @NotNull
-    private final static XStream stream = new XStream();
-
     private static final ExecutorService pool = Executors.newCachedThreadPool();
-
-    private static DataBase dataBase;
-
 
 
     @NotNull
@@ -45,7 +39,7 @@ public class Server {
             ServerSocket socketListener = new ServerSocket(4444);
             System.out.println("Start server...");
 
-            dataBase = new DataBase();
+            DataBase dataBase = new DataBase();
 
             pool.submit(new ServerThread(socketListener, dataBase));
 
