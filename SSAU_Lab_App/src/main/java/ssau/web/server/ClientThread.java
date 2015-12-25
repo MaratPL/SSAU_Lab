@@ -227,7 +227,7 @@ public class ClientThread extends Thread {
                     break;
                 }
             }
-
+            System.out.println("ClientThread is over...");
             inputStream.close();
             outputStream.close();
         } catch (SocketException e) {

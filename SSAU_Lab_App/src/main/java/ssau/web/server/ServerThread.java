@@ -16,12 +16,10 @@ public class ServerThread extends Thread {
     public void run() {
         try {
             while (!Thread.currentThread().isInterrupted()) {
-                Socket client = null;
-                while (client == null) {
-                    client = serverSocket.accept();
-                }
+                Socket client = serverSocket.accept();
                 Server.getPool().submit(new ClientThread(client));
             }
+            System.out.println("ServerThread is over...");
         } catch (IOException e) {
             e.printStackTrace();
         }
