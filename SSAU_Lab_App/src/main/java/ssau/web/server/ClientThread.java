@@ -30,6 +30,7 @@ public class ClientThread extends Thread {
 
     public void run() {
         try {
+            System.out.println(Server.getModel());
             final ObjectInputStream inputStream = new ObjectInputStream(this.socket.getInputStream());
             final ObjectOutputStream outputStream = new ObjectOutputStream(this.socket.getOutputStream());
             final XStream xStream = new XStream();
@@ -48,7 +49,7 @@ public class ClientThread extends Thread {
             }
 
 
-            while (true) {
+            while (!Thread.currentThread().isInterrupted()) {
 
                 protocol = (Protocol) xStream.fromXML((String) inputStream.readObject());
 
