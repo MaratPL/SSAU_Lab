@@ -64,7 +64,6 @@ public class NewJFrame extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         allGamesTable1 = new javax.swing.JTable();
-        gamePanelComboBox1 = new javax.swing.JComboBox();
         deleteGameButton1 = new javax.swing.JButton();
         updateGameButton1 = new javax.swing.JButton();
         genrePanel = new javax.swing.JPanel();
@@ -72,7 +71,6 @@ public class NewJFrame extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         createGenreButton1 = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
-        genrePanelComboBox1 = new javax.swing.JComboBox();
         jScrollPane2 = new javax.swing.JScrollPane();
         allGenreTable1 = new javax.swing.JTable();
         deleteGenreButton1 = new javax.swing.JButton();
@@ -91,7 +89,7 @@ public class NewJFrame extends javax.swing.JFrame {
             }
         });
 
-        jLabel2.setText("Game Data");
+        jLabel2.setText("Game Company");
 
         gameDataTextField1.setToolTipText("");
         gameDataTextField1.addActionListener(new java.awt.event.ActionListener() {
@@ -115,7 +113,7 @@ public class NewJFrame extends javax.swing.JFrame {
 
                 },
                 new String[]{
-                        "game id", "game Name", "game Data", "game Genre"
+                        "game id", "game Name", "game Company", "game Genre"
                 }
         ) {
             Class[] types = new Class[]{
@@ -145,8 +143,8 @@ public class NewJFrame extends javax.swing.JFrame {
                 if(i!=-1){
                     DefaultTableModel model = (DefaultTableModel) allGamesTable1.getModel();
                     List<Genre> temp = client.getModel().getGameById(model.getValueAt(i, 0).toString()).getGenreList();
-                    for (int j = 0; j < temp.size(); j++) {
-                        gameGenresColumnComboBox.addItem(temp.get(j).getGenreName());
+                    for (final Genre genre : temp) {
+                        gameGenresColumnComboBox.addItem(genre.getGenreName());
                     }
                 }
             }
@@ -173,39 +171,6 @@ public class NewJFrame extends javax.swing.JFrame {
                 DefaultTableModel model = (DefaultTableModel) allGamesTable1.getModel();
                 gameNameTextField1.setText(model.getValueAt(i, 1).toString());
                 gameDataTextField1.setText(model.getValueAt(i, 2).toString());
-            }
-        });
-
-
-//        gamePanelComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"Null"}));
-//
-//        gamePanelComboBox1.addActionListener(new java.awt.event.ActionListener() {
-//            public void actionPerformed(java.awt.event.ActionEvent evt) {
-
-
-        gamePanelComboBox1.addMouseListener(new MouseAdapter(){
-            @Override
-            public void mouseClicked(MouseEvent e){
-                gamePanelComboBox1.removeAllItems();
-
-                int i = allGamesTable1.getSelectedRow();
-                if (i >= 0) {
-//                    DefaultTableModel model = (DefaultTableModel) allGamesTable1.getModel();
-//                    String gameId = model.getValueAt(i, 0).toString();
-//                    List<Genre> allGenre = controller.getGameById(gameId).getGenreList();
-                    List<Genre> allGenre = client.getModel().getAllGenres();
-                    for(int j=0; j < allGenre.size(); j++){
-                        gamePanelComboBox1.addItem(allGenre.get(j).getGenreId());
-                    }
-
-                } else {
-                    List<Genre> allGenre = client.getModel().getAllGenres();
-                    for(int j=0; j < allGenre.size(); j++){
-                        gamePanelComboBox1.addItem(allGenre.get(j).getGenreId());
-                    }
-                }
-
-                //gamePanelComboBox1ActionPerformed(evt);
             }
         });
 
@@ -241,7 +206,6 @@ public class NewJFrame extends javax.swing.JFrame {
                                         .addComponent(gameDataTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 224, Short.MAX_VALUE)
                                         .addComponent(createGameButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(gameNameTextField1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 224, Short.MAX_VALUE)
-                                        .addComponent(gamePanelComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(deleteGameButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(updateGameButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addGap(27, 27, 27)
@@ -266,7 +230,6 @@ public class NewJFrame extends javax.swing.JFrame {
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                                 .addComponent(gameDataTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                 .addGap(18, 18, 18)
-                                                .addComponent(gamePanelComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                                 .addComponent(updateGameButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -295,13 +258,6 @@ public class NewJFrame extends javax.swing.JFrame {
         });
 
         jLabel5.setText("All Genres Table");
-
-        genrePanelComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"Item 1", "Item 2", "Item 3", "Item 4"}));
-        genrePanelComboBox1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                genrePanelComboBox1ActionPerformed(evt);
-            }
-        });
 
         allGenreTable1.setModel(new javax.swing.table.DefaultTableModel(
                 new Object[][]{
@@ -376,8 +332,7 @@ public class NewJFrame extends javax.swing.JFrame {
                                                 .addGroup(genrePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                                         .addGroup(javax.swing.GroupLayout.Alignment.LEADING, genrePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                                                 .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                .addComponent(genreNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                                        .addComponent(genrePanelComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                                                .addComponent(genreNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE))))
                                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, genrePanelLayout.createSequentialGroup()
                                                 .addContainerGap()
                                                 .addGroup(genrePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -402,7 +357,6 @@ public class NewJFrame extends javax.swing.JFrame {
                                         .addGroup(genrePanelLayout.createSequentialGroup()
                                                 .addComponent(genreNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                 .addGap(31, 31, 31)
-                                                .addComponent(genrePanelComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                                 .addComponent(updateGenreButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -516,10 +470,6 @@ public class NewJFrame extends javax.swing.JFrame {
         gameName = gameNameTextField1.getText();
         gameData = gameDataTextField1.getText();
 
-//        List<Genre> tempList = new ArrayList<Genre>();
-//        if(gamePanelComboBox1.getSelectedItem() != null){
-//            tempList.add(client.getModel().getGenreById(gamePanelComboBox1.getSelectedItem().toString()));
-//        }
         List<Genre> tempList = new ArrayList<Genre>();
         try {
             client.addGame(gameName, gameData, tempList);
@@ -639,10 +589,6 @@ public class NewJFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
     }
 
-    private void gamePanelComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-    }
-
     private void loadKeyActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
     }
@@ -652,10 +598,6 @@ public class NewJFrame extends javax.swing.JFrame {
     }
 
     private void loadKeyMouseClicked(java.awt.event.MouseEvent evt) {
-        // TODO add your handling code here:
-    }
-
-    private void genrePanelComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
     }
 
@@ -711,10 +653,8 @@ public class NewJFrame extends javax.swing.JFrame {
     private javax.swing.JTextField gameDataTextField1;
     private javax.swing.JTextField gameNameTextField1;
     private javax.swing.JPanel gamePanel;
-    private javax.swing.JComboBox gamePanelComboBox1;
     private javax.swing.JTextField genreNameTextField;
     private javax.swing.JPanel genrePanel;
-    private javax.swing.JComboBox genrePanelComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

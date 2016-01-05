@@ -52,7 +52,7 @@ public class UpdateGenreDialog extends AbstractDialog {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         Dimension frameSize = getSize();
         setLocation(new Point((screenSize.width - frameSize.width) / 2, (screenSize.height - frameSize.height) / 2));
-        setPreferredSize(new Dimension(540, 130));
+        setPreferredSize(new Dimension(540, 150));
         setTitle("Редактирование жанра");
         getRootPane().setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
