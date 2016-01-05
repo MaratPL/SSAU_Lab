@@ -73,7 +73,7 @@ public class UpdateGameDialog extends AbstractDialog  {
         Dimension frameSize = getSize();
         setLocation(new Point((screenSize.width - frameSize.width) / 2, (screenSize.height - frameSize.height) / 2));
         setPreferredSize(new Dimension(400, 400));
-        setTitle("Редактирование жанра");
+        setTitle("Редактирование игры");
         getRootPane().setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
         setLayout(new BorderLayout());
