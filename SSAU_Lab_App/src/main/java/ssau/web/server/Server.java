@@ -27,7 +27,17 @@ public class Server {
     private final static Users users = new Users();
 
     @NotNull
-    private static ServerModel serverModel = new ServerModel();
+    private static ServerModel serverModel;
+
+    static {
+        try {
+            serverModel = new ServerModel();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
 
     private static final ExecutorService pool = Executors.newCachedThreadPool();
 
@@ -40,9 +50,6 @@ public class Server {
             ServerSocket socketListener = new ServerSocket(4444);
             System.out.println("Start server...");
 
-            DataBase dataBase = new DataBase();
-            serverModel.setDataBase(dataBase);
-
             pool.submit(new ServerThread(socketListener));
 
             Scanner sc = new Scanner(System.in);
@@ -54,7 +61,7 @@ public class Server {
 
             pool.shutdownNow();
             System.out.println("Stop server...");
-            dataBase.close();
+            serverModel.close();
 
         } catch (SocketException e) {
             System.err.println("Socket exception");
@@ -62,7 +69,7 @@ public class Server {
         } catch (IOException e) {
             System.err.println("I/O exception");
             e.printStackTrace();
-        } catch (SQLException | ClassNotFoundException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }

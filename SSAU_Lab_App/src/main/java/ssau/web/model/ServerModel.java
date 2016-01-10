@@ -8,6 +8,7 @@ import ssau.lab.Genre;
 import ssau.web.db.DataBase;
 
 import java.io.Serializable;
+import java.sql.SQLException;
 import java.util.*;
 
 public class ServerModel extends AbstractModel implements Serializable {
@@ -18,9 +19,16 @@ public class ServerModel extends AbstractModel implements Serializable {
     private DataBase dataBase = null;
 
 
-    public ServerModel() {
+    public ServerModel() throws SQLException, ClassNotFoundException {
         gameMap = new HashMap<>();
         genreMap = new HashMap<>();
+        System.out.println("Start server...");
+
+        dataBase = new DataBase();
+    }
+
+    public void close() throws SQLException {
+        dataBase.close();
     }
 
     private synchronized void update() {
