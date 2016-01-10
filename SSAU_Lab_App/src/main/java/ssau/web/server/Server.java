@@ -5,6 +5,7 @@ import com.thoughtworks.xstream.XStream;
 import org.jetbrains.annotations.NotNull;
 import ssau.lab.Model;
 import ssau.web.db.DataBase;
+import ssau.web.model.ServerModel;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -26,7 +27,7 @@ public class Server {
     private final static Users users = new Users();
 
     @NotNull
-    private static Model model = new Model();
+    private static ServerModel serverModel = new ServerModel();
 
     private static final ExecutorService pool = Executors.newCachedThreadPool();
 
@@ -40,8 +41,9 @@ public class Server {
             System.out.println("Start server...");
 
             DataBase dataBase = new DataBase();
+            serverModel.setDataBase(dataBase);
 
-            pool.submit(new ServerThread(socketListener, dataBase));
+            pool.submit(new ServerThread(socketListener));
 
             Scanner sc = new Scanner(System.in);
             String stop = null;
@@ -52,6 +54,7 @@ public class Server {
 
             pool.shutdownNow();
             System.out.println("Stop server...");
+            dataBase.close();
 
         } catch (SocketException e) {
             System.err.println("Socket exception");
@@ -59,16 +62,14 @@ public class Server {
         } catch (IOException e) {
             System.err.println("I/O exception");
             e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
 
     @NotNull
-    public static Model getModel() {
-        return model;
+    public static ServerModel getServerModel() {
+        return serverModel;
     }
 
     @NotNull

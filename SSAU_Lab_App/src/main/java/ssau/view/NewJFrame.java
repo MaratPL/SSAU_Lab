@@ -135,7 +135,7 @@ public class NewJFrame extends javax.swing.JFrame {
         });
 
         //------------MY CODE
-        final JComboBox gameGenresColumnComboBox = new JComboBox<String>();
+        final JComboBox gameGenresColumnComboBox = new JComboBox<>();
         gameGenresColumnComboBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -181,7 +181,15 @@ public class NewJFrame extends javax.swing.JFrame {
         deleteGameButton1.setText("Delete Game");
         deleteGameButton1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                deleteGameMouseClicked(evt);
+                try {
+                    deleteGameMouseClicked(evt);
+                } catch (JAXBException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -305,7 +313,15 @@ public class NewJFrame extends javax.swing.JFrame {
         deleteGenreButton1.setText("Delete Genre");
         deleteGenreButton1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                deleteGenreButton1MouseClicked(evt);
+                try {
+                    deleteGenreButton1MouseClicked(evt);
+                } catch (JAXBException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -449,12 +465,12 @@ public class NewJFrame extends javax.swing.JFrame {
         dialog.setVisible(true);
     }
 
-    private void deleteGameMouseClicked(java.awt.event.MouseEvent evt) {
+    private void deleteGameMouseClicked(java.awt.event.MouseEvent evt) throws JAXBException, IOException, ClassNotFoundException {
         int i = allGamesTable1.getSelectedRow();
         if(i>=0){
             DefaultTableModel model = (DefaultTableModel) allGamesTable1.getModel();
             String deletedGmaeId = model.getValueAt(i,0).toString();
-            client.getModel().removeGameById(deletedGmaeId);
+            client.removeGameById(deletedGmaeId);
 
             model.setRowCount(0);
 
@@ -523,12 +539,12 @@ public class NewJFrame extends javax.swing.JFrame {
     }
 
 
-    private void deleteGenreButton1MouseClicked(java.awt.event.MouseEvent evt) {
+    private void deleteGenreButton1MouseClicked(java.awt.event.MouseEvent evt) throws JAXBException, IOException, ClassNotFoundException {
         int i = allGenreTable1.getSelectedRow();
         if(i>=0){
             DefaultTableModel model = (DefaultTableModel) allGenreTable1.getModel();
             String deletedGenreId = model.getValueAt(i,0).toString();
-            client.getModel().removeGenreById(deletedGenreId);
+            client.removeGenreById(deletedGenreId);
 
             model.setRowCount(0);
 

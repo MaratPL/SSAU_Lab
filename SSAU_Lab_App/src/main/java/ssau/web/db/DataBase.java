@@ -16,13 +16,17 @@ public class DataBase {
     private final Connection connection;
     private final String url = "jdbc:mysql://127.0.0.1:3306/ssau";
     private final String name = "root";
-    private final String password = "parol";
+    private final String password = "a26014680";
 
     public DataBase() throws ClassNotFoundException, SQLException {
         Class.forName("com.mysql.jdbc.Driver");
         System.out.println("Driver connected...");
         connection = DriverManager.getConnection(url, name, password);
         System.out.println("Data base connected...");
+    }
+
+    public void close() throws SQLException {
+        connection.close();
     }
 
 

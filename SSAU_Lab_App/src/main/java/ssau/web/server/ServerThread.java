@@ -10,17 +10,15 @@ import java.net.Socket;
 public class ServerThread extends Thread {
 
    private ServerSocket serverSocket;
-    private DataBase dataBase;
 
-    public ServerThread(@NotNull final ServerSocket serverSocket, @NotNull final DataBase dataBase) {
+    public ServerThread(@NotNull final ServerSocket serverSocket) {
         this.serverSocket = serverSocket;
-        this.dataBase = dataBase;
     }
     public void run() {
         try {
             while (!Thread.currentThread().isInterrupted()) {
                 Socket client = serverSocket.accept();
-                Server.getPool().submit(new ClientThread(client, dataBase));
+                Server.getPool().submit(new ClientThread(client));
             }
         } catch (IOException e) {
             e.printStackTrace();
