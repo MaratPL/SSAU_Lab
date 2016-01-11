@@ -27,6 +27,7 @@ public class DataBase {
 
     public void close() throws SQLException {
         connection.close();
+        System.out.println("Data base disconnected...");
     }
 
 

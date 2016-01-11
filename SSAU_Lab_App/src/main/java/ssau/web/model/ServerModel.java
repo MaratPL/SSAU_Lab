@@ -22,7 +22,6 @@ public class ServerModel extends AbstractModel implements Serializable {
     public ServerModel() throws SQLException, ClassNotFoundException {
         gameMap = new HashMap<>();
         genreMap = new HashMap<>();
-        System.out.println("Start server...");
 
         dataBase = new DataBase();
     }
