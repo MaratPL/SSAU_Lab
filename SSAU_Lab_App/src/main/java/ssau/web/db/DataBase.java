@@ -13,12 +13,16 @@ import java.util.List;
 
 public class DataBase {
 
-    private final Connection connection;
+    private Connection connection;
     private final String url = "jdbc:mysql://127.0.0.1:3306/ssau";
     private final String name = "root";
-    private final String password = "a26014680";
+    private final String password = "parol";
 
-    public DataBase() throws ClassNotFoundException, SQLException {
+    public DataBase() {
+
+    }
+
+    public void open() throws SQLException, ClassNotFoundException {
         Class.forName("com.mysql.jdbc.Driver");
         System.out.println("Driver connected...");
         connection = DriverManager.getConnection(url, name, password);

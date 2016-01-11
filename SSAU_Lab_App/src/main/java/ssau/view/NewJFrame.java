@@ -398,7 +398,7 @@ public class NewJFrame extends javax.swing.JFrame {
             }
         });
 
-        loadKey.setText("Load");
+        loadKey.setText("Refresh");
         loadKey.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 loadKeyMouseClicked(evt);
@@ -616,7 +616,8 @@ public class NewJFrame extends javax.swing.JFrame {
     }
 
     private void loadKeyActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
+        updateGamesTable();
+        updateGenresTable();
     }
 
     private void saveKeyMouseClicked(java.awt.event.MouseEvent evt) {

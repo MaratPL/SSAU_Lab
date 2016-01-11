@@ -74,4 +74,20 @@ public class Game implements Serializable{
     public void setGenreList(@NotNull final List<Genre> genreList) {
         this.genreList = genreList;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Game game = (Game) o;
+
+        return gameId.equals(game.gameId);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return gameId.hashCode();
+    }
 }

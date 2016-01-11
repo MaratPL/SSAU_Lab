@@ -27,17 +27,7 @@ public class Server {
     private final static Users users = new Users();
 
     @NotNull
-    private static ServerModel serverModel;
-
-    static {
-        try {
-            serverModel = new ServerModel();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
+    private static ServerModel serverModel = new ServerModel();
 
     private static final ExecutorService pool = Executors.newCachedThreadPool();
 
@@ -47,6 +37,7 @@ public class Server {
 
     public static void main(String[] args) {
         try {
+            serverModel.open();
             ServerSocket socketListener = new ServerSocket(4444);
             System.out.println("Start server...");
 
@@ -69,7 +60,7 @@ public class Server {
         } catch (IOException e) {
             System.err.println("I/O exception");
             e.printStackTrace();
-        } catch (SQLException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }

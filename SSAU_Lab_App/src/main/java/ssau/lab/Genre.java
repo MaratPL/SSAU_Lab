@@ -43,4 +43,20 @@ public class Genre implements Serializable{
     public void setGenreName(@Nullable final String genreName) {
         this.genreName = genreName;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Genre genre = (Genre) o;
+
+        return genreId.equals(genre.genreId);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return genreId.hashCode();
+    }
 }

@@ -57,6 +57,7 @@ public class ServerResponseListener extends Thread {
                                 if (frame.getClient().getModel().getGenreById(genre.getGenreId()) != null){
                                     frame.getClient().getModel().removeGenreById(genre.getGenreId());
                                     frame.updateGenresTable();
+                                    frame.updateGamesTable();
                                 }
                             }
                             break;
